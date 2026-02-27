@@ -1,0 +1,35 @@
+import Foundation
+
+struct Sticker: Identifiable, Hashable {
+    let id = UUID()
+    let emoji: String
+    let name: String
+
+    static let all: [Sticker] = [
+        Sticker(emoji: "🌸", name: "벚꽃"),
+        Sticker(emoji: "💖", name: "하트"),
+        Sticker(emoji: "🎀", name: "리본"),
+        Sticker(emoji: "⭐", name: "별"),
+        Sticker(emoji: "🌈", name: "무지개"),
+        Sticker(emoji: "🦋", name: "나비"),
+        Sticker(emoji: "🍰", name: "케이크"),
+        Sticker(emoji: "🌷", name: "튤립"),
+        Sticker(emoji: "🐰", name: "토끼"),
+        Sticker(emoji: "☁️", name: "구름"),
+        Sticker(emoji: "🍓", name: "딸기"),
+        Sticker(emoji: "🧸", name: "곰돌이"),
+        Sticker(emoji: "💫", name: "반짝"),
+        Sticker(emoji: "🌙", name: "달"),
+        Sticker(emoji: "🎵", name: "음표"),
+        Sticker(emoji: "💐", name: "꽃다발"),
+    ]
+
+    // Calendar stickers shown on days with entries
+    static let calendarStickers: [String] = [
+        "🌸", "💖", "🎀", "⭐", "🦋", "🍰", "🌷", "🐰"
+    ]
+
+    static func randomCalendarSticker() -> String {
+        calendarStickers.randomElement() ?? "🌸"
+    }
+}

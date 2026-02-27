@@ -1,0 +1,25 @@
+# IDE
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Temp
+.temp/
+
+# Android SDK (symlinks & tools)
+build-tools/
+emulator
+licenses/
+platform-tools/
+platforms/
+system-images
+
+# Cache
+lotto_cache.json

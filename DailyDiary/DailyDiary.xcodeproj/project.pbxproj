@@ -1,0 +1,385 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0DB39EF31978621F2946F13F /* Color+Pastel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52C54E6A4F813E65D4F2EA7 /* Color+Pastel.swift */; };
+		21FAB600EC427AA676D145D6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F0BE28530456CBCE2A03A0 /* ContentView.swift */; };
+		26891F6A394DE2F0D4D6AB61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 259265A3195A29E02183E073 /* Assets.xcassets */; };
+		5CAEE33AABD4B84908DBA63B /* Sticker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C997E37D8613A29A9EEB8A57 /* Sticker.swift */; };
+		6AC7D2D4FF9105D430277CA0 /* DayDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F934F0A10509937D4B12C9 /* DayDetailView.swift */; };
+		D2C8765B8A3239642F1D46F4 /* DiaryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD71972F994D263572B692A3 /* DiaryEditorView.swift */; };
+		D93C359D0E7B2D8A611EBFDD /* DailyDiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555A768C819FC9EBA7C77EDF /* DailyDiaryApp.swift */; };
+		F1A991D3C089B4B529C568EF /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325E4DE3FCF73B587D0B3A41 /* Date+Extensions.swift */; };
+		F841B998346A0485A6160E91 /* DiaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DF31886E387D3233C3E1C37 /* DiaryEntry.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		259265A3195A29E02183E073 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		325E4DE3FCF73B587D0B3A41 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		51F934F0A10509937D4B12C9 /* DayDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayDetailView.swift; sourceTree = "<group>"; };
+		555A768C819FC9EBA7C77EDF /* DailyDiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyDiaryApp.swift; sourceTree = "<group>"; };
+		65BE591A329AEEAFFB7E741E /* DailyDiary.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DailyDiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DF31886E387D3233C3E1C37 /* DiaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEntry.swift; sourceTree = "<group>"; };
+		B52C54E6A4F813E65D4F2EA7 /* Color+Pastel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Pastel.swift"; sourceTree = "<group>"; };
+		C997E37D8613A29A9EEB8A57 /* Sticker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sticker.swift; sourceTree = "<group>"; };
+		DD71972F994D263572B692A3 /* DiaryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEditorView.swift; sourceTree = "<group>"; };
+		E08C9174DAFBBC8C1E6FA2B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E7F0BE28530456CBCE2A03A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		164DD71458CC7AAE9FB63681 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9DF31886E387D3233C3E1C37 /* DiaryEntry.swift */,
+				C997E37D8613A29A9EEB8A57 /* Sticker.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		38A8CFDBC409031455DFD02B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E7F0BE28530456CBCE2A03A0 /* ContentView.swift */,
+				51F934F0A10509937D4B12C9 /* DayDetailView.swift */,
+				DD71972F994D263572B692A3 /* DiaryEditorView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		421052DB1319A0BE670F97F0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				65BE591A329AEEAFFB7E741E /* DailyDiary.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		52592841C0206395C77DF46A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				259265A3195A29E02183E073 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		69844D329723FF89B41074DE = {
+			isa = PBXGroup;
+			children = (
+				BF43C3EFF167F628A8DCE0E7 /* DailyDiary */,
+				421052DB1319A0BE670F97F0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B905B1635BA992972C0C796A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B52C54E6A4F813E65D4F2EA7 /* Color+Pastel.swift */,
+				325E4DE3FCF73B587D0B3A41 /* Date+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		BF43C3EFF167F628A8DCE0E7 /* DailyDiary */ = {
+			isa = PBXGroup;
+			children = (
+				E08C9174DAFBBC8C1E6FA2B7 /* Info.plist */,
+				EED15B224AACDFE97B0091AE /* App */,
+				B905B1635BA992972C0C796A /* Extensions */,
+				164DD71458CC7AAE9FB63681 /* Models */,
+				52592841C0206395C77DF46A /* Resources */,
+				38A8CFDBC409031455DFD02B /* Views */,
+			);
+			path = DailyDiary;
+			sourceTree = "<group>";
+		};
+		EED15B224AACDFE97B0091AE /* App */ = {
+			isa = PBXGroup;
+			children = (
+				555A768C819FC9EBA7C77EDF /* DailyDiaryApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7E048612A5676D2C6EA86552 /* DailyDiary */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F898F880051903377C1EC73A /* Build configuration list for PBXNativeTarget "DailyDiary" */;
+			buildPhases = (
+				3A04A9FFF330320979F11FFC /* Sources */,
+				2E79AE55031D6D158BC8FA73 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DailyDiary;
+			packageProductDependencies = (
+			);
+			productName = DailyDiary;
+			productReference = 65BE591A329AEEAFFB7E741E /* DailyDiary.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		762861ACBBAB12252A4FB893 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					7E048612A5676D2C6EA86552 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = F7DB1B844E85CC5A17315E14 /* Build configuration list for PBXProject "DailyDiary" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 69844D329723FF89B41074DE;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7E048612A5676D2C6EA86552 /* DailyDiary */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2E79AE55031D6D158BC8FA73 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26891F6A394DE2F0D4D6AB61 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3A04A9FFF330320979F11FFC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0DB39EF31978621F2946F13F /* Color+Pastel.swift in Sources */,
+				21FAB600EC427AA676D145D6 /* ContentView.swift in Sources */,
+				D93C359D0E7B2D8A611EBFDD /* DailyDiaryApp.swift in Sources */,
+				F1A991D3C089B4B529C568EF /* Date+Extensions.swift in Sources */,
+				6AC7D2D4FF9105D430277CA0 /* DayDetailView.swift in Sources */,
+				D2C8765B8A3239642F1D46F4 /* DiaryEditorView.swift in Sources */,
+				F841B998346A0485A6160E91 /* DiaryEntry.swift in Sources */,
+				5CAEE33AABD4B84908DBA63B /* Sticker.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		37005CD7A69CA72EE6C6BB2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DailyDiary/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailydiary.app;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		74CD971F7985E20FDA92AE7C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DailyDiary/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailydiary.app;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A4877A370691C6CA5D030E34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		F6A3027D92BC7D0AB4A18479 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F7DB1B844E85CC5A17315E14 /* Build configuration list for PBXProject "DailyDiary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4877A370691C6CA5D030E34 /* Debug */,
+				F6A3027D92BC7D0AB4A18479 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F898F880051903377C1EC73A /* Build configuration list for PBXNativeTarget "DailyDiary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37005CD7A69CA72EE6C6BB2E /* Debug */,
+				74CD971F7985E20FDA92AE7C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 762861ACBBAB12252A4FB893 /* Project object */;
+}
