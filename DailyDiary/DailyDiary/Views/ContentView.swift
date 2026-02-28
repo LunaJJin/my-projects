@@ -3,7 +3,7 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \DiaryEntry.createdAt, order: .descending) private var allEntries: [DiaryEntry]
+    @Query(sort: \DiaryEntry.createdAt, order: .reverse) private var allEntries: [DiaryEntry]
 
     @State private var currentMonth = Date()
     @State private var selectedDate: Date? = nil
@@ -63,7 +63,7 @@ struct ContentView: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white.opacity(0.85))
+                .fill(Color.white.withOpacity(0.85))
                 .shadow(color: .cardShadow, radius: 15, x: 0, y: 8)
         )
     }
@@ -115,8 +115,8 @@ struct ContentView: View {
                 Text(weekdays[index])
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundColor(
-                        index == 0 ? Color.red.opacity(0.6) :
-                        index == 6 ? Color.blue.opacity(0.5) :
+                        index == 0 ? Color.red.withOpacity(0.6) :
+                        index == 6 ? Color.blue.withOpacity(0.5) :
                         .diaryTextLight
                     )
                     .frame(maxWidth: .infinity)
@@ -170,8 +170,8 @@ struct ContentView: View {
                     .font(.system(size: 15, weight: isToday ? .bold : .medium, design: .rounded))
                     .foregroundColor(
                         isSelected ? .white :
-                        weekday == 0 ? Color.red.opacity(0.7) :
-                        weekday == 6 ? Color.blue.opacity(0.6) :
+                        weekday == 0 ? Color.red.withOpacity(0.7) :
+                        weekday == 6 ? Color.blue.withOpacity(0.6) :
                         .diaryText
                     )
 
@@ -197,10 +197,10 @@ struct ContentView: View {
                             )
                     } else if isToday {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.pastelYellow.opacity(0.5))
+                            .fill(Color.pastelYellow.withOpacity(0.5))
                     } else if hasEntries {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.pastelPinkLight.opacity(0.5))
+                            .fill(Color.pastelPinkLight.withOpacity(0.5))
                     }
                 }
             )
@@ -249,7 +249,7 @@ struct ContentView: View {
 
             if !entries.isEmpty {
                 VStack(spacing: 8) {
-                    ForEach(entries.prefix(2)) { entry in
+                    ForEach(entries) { entry in
                         HStack(spacing: 10) {
                             Text(entry.stickerEmoji)
                                 .font(.system(size: 20))
@@ -270,7 +270,7 @@ struct ContentView: View {
                         .padding(12)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.pastelPinkLight.opacity(0.4))
+                                .fill(Color.pastelPinkLight.withOpacity(0.4))
                         )
                     }
                 }
@@ -279,7 +279,7 @@ struct ContentView: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white.opacity(0.85))
+                .fill(Color.white.withOpacity(0.85))
                 .shadow(color: .cardShadow, radius: 15, x: 0, y: 8)
         )
         .transition(.move(edge: .bottom).combined(with: .opacity))

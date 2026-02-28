@@ -13,7 +13,7 @@ struct DiaryEditorView: View {
     @State private var selectedSticker: String = "🌸"
     @State private var photoDataArray: [Data] = []
     @State private var selectedPhotos: [PhotosPickerItem] = []
-    @State private var showStickerPicker = false
+    @State private var showEmojiPicker = false
     @State private var showDiscardAlert = false
 
     private var isEditing: Bool {
@@ -47,7 +47,7 @@ struct DiaryEditorView: View {
             }
             .navigationTitle(isEditing ? "일기 수정" : "새 일기")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.pastelPinkLight.opacity(0.5), for: .navigationBar)
+            .toolbarBackground(Color.pastelPinkLight.withOpacity(0.5), for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("취소") {
@@ -102,90 +102,48 @@ struct DiaryEditorView: View {
     private var stickerSection: some View {
         VStack(spacing: 12) {
             HStack {
-                Text("오늘의 스티커")
+                Text("오늘의 이모지")
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(.diaryText)
                 Spacer()
             }
 
             Button {
-                showStickerPicker.toggle()
+                showEmojiPicker = true
             } label: {
                 HStack(spacing: 12) {
                     Text(selectedSticker)
                         .font(.system(size: 40))
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(stickerName(for: selectedSticker))
+                        Text("탭하여 변경")
                             .font(.system(size: 14, weight: .semibold, design: .rounded))
                             .foregroundColor(.diaryText)
-                        Text("탭하여 변경")
+                        Text("이모지 키보드에서 자유롭게 선택")
                             .font(.system(size: 12, design: .rounded))
                             .foregroundColor(.diaryTextMuted)
                     }
 
                     Spacer()
 
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.diaryTextLight)
-                        .rotationEffect(.degrees(showStickerPicker ? 180 : 0))
+                    Image(systemName: "face.smiling")
+                        .font(.system(size: 20))
+                        .foregroundColor(.pastelPink)
                 }
                 .padding(16)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.white.opacity(0.85))
+                        .fill(Color.white.withOpacity(0.85))
                         .shadow(color: .cardShadow, radius: 8, x: 0, y: 4)
                 )
             }
             .buttonStyle(.plain)
-
-            if showStickerPicker {
-                stickerGrid
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
         }
-        .animation(.spring(response: 0.3), value: showStickerPicker)
-    }
-
-    private var stickerGrid: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 12) {
-            ForEach(Sticker.all) { sticker in
-                Button {
-                    withAnimation(.spring(response: 0.2)) {
-                        selectedSticker = sticker.emoji
-                        showStickerPicker = false
-                    }
-                } label: {
-                    VStack(spacing: 4) {
-                        Text(sticker.emoji)
-                            .font(.system(size: 30))
-                        Text(sticker.name)
-                            .font(.system(size: 11, design: .rounded))
-                            .foregroundColor(.diaryTextLight)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(selectedSticker == sticker.emoji ?
-                                  Color.pastelPinkLight : Color.white.opacity(0.5))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(selectedSticker == sticker.emoji ?
-                                    Color.pastelPink : Color.clear, lineWidth: 2)
-                    )
-                }
-                .buttonStyle(.plain)
-            }
+        .sheet(isPresented: $showEmojiPicker) {
+            EmojiPickerSheet(selectedEmoji: $selectedSticker)
+                .presentationDetents([.height(300)])
+                .presentationCornerRadius(28)
         }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white.opacity(0.85))
-                .shadow(color: .cardShadow, radius: 8, x: 0, y: 4)
-        )
     }
 
     // MARK: - Text Section
@@ -222,7 +180,7 @@ struct DiaryEditorView: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.white.opacity(0.85))
+                    .fill(Color.white.withOpacity(0.85))
                     .shadow(color: .cardShadow, radius: 8, x: 0, y: 4)
             )
         }
@@ -235,69 +193,18 @@ struct DiaryEditorView: View {
                 Text("사진 첨부")
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(.diaryText)
-
                 Spacer()
-
                 Text("\(photoDataArray.count)/5")
                     .font(.system(size: 12, design: .rounded))
                     .foregroundColor(.diaryTextMuted)
             }
-
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    // Add photo button
                     if photoDataArray.count < 5 {
-                        PhotosPicker(
-                            selection: $selectedPhotos,
-                            maxSelectionCount: 5 - photoDataArray.count,
-                            matching: .images
-                        ) {
-                            VStack(spacing: 6) {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.system(size: 28))
-                                    .foregroundColor(.pastelPink)
-                                Text("추가")
-                                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                                    .foregroundColor(.diaryTextLight)
-                            }
-                            .frame(width: 100, height: 100)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color.white.opacity(0.85))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(
-                                                style: StrokeStyle(lineWidth: 2, dash: [6])
-                                            )
-                                            .foregroundColor(.pastelPink.opacity(0.5))
-                                    )
-                            )
-                        }
+                        addPhotoButton
                     }
-
-                    // Existing photos
                     ForEach(photoDataArray.indices, id: \.self) { index in
-                        ZStack(alignment: .topTrailing) {
-                            if let uiImage = UIImage(data: photoDataArray[index]) {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 100, height: 100)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                            }
-
-                            Button {
-                                withAnimation {
-                                    photoDataArray.remove(at: index)
-                                }
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.white)
-                                    .shadow(radius: 2)
-                            }
-                            .offset(x: 6, y: -6)
-                        }
+                        photoCard(at: index)
                     }
                 }
                 .padding(.vertical, 4)
@@ -305,9 +212,63 @@ struct DiaryEditorView: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.white.opacity(0.85))
+                    .fill(Color.white.withOpacity(0.85))
                     .shadow(color: .cardShadow, radius: 8, x: 0, y: 4)
             )
+        }
+    }
+
+    private var addPhotoButton: some View {
+        PhotosPicker(
+            selection: $selectedPhotos,
+            maxSelectionCount: 5 - photoDataArray.count,
+            matching: .images
+        ) {
+            VStack(spacing: 6) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 28))
+                    .foregroundColor(.pastelPink)
+                Text("추가")
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundColor(.diaryTextLight)
+            }
+            .frame(width: 100, height: 100)
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white.withOpacity(0.85))
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(
+                            Color.pastelPink.withOpacity(0.5),
+                            style: StrokeStyle(lineWidth: 2, dash: [6])
+                        )
+                }
+            )
+        }
+    }
+
+    private func photoCard(at index: Int) -> some View {
+        ZStack(alignment: .topTrailing) {
+            if let uiImage = UIImage(data: photoDataArray[index]) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 100, height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            }
+            Button {
+                withAnimation {
+                    var updated = photoDataArray
+                    updated.remove(at: index)
+                    photoDataArray = updated
+                }
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 20))
+                    .foregroundColor(.white)
+                    .shadow(radius: 2)
+            }
+            .offset(x: 6, y: -6)
         }
     }
 
@@ -353,8 +314,34 @@ struct DiaryEditorView: View {
         }
     }
 
-    private func stickerName(for emoji: String) -> String {
-        Sticker.all.first(where: { $0.emoji == emoji })?.name ?? "스티커"
+}
+
+struct EmojiPickerSheet: View {
+    @Binding var selectedEmoji: String
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("이모지 선택")
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundColor(.diaryText)
+                .padding(.top, 24)
+
+            Text(selectedEmoji)
+                .font(.system(size: 80))
+
+            Text("키보드의 🌐 버튼을 눌러 이모지를 선택하세요")
+                .font(.system(size: 13, design: .rounded))
+                .foregroundColor(.diaryTextLight)
+                .multilineTextAlignment(.center)
+
+            EmojiTextField(selectedEmoji: $selectedEmoji) {
+                dismiss()
+            }
+            .frame(width: 80, height: 50)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
     }
 }
 

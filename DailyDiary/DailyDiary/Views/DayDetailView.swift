@@ -12,6 +12,9 @@ struct DayDetailView: View {
     @State private var editingEntry: DiaryEntry? = nil
     @State private var showDeleteAlert = false
     @State private var entryToDelete: DiaryEntry? = nil
+    @State private var showPhotoViewer = false
+    @State private var selectedPhotoIndex = 0
+    @State private var viewerPhotos: [Data] = []
 
     private var entries: [DiaryEntry] {
         allEntries
@@ -64,6 +67,9 @@ struct DayDetailView: View {
             DiaryEditorView(date: date, existingEntry: editingEntry)
                 .presentationDetents([.large])
                 .presentationCornerRadius(32)
+        }
+        .fullScreenCover(isPresented: $showPhotoViewer) {
+            PhotoViewerView(photos: viewerPhotos, currentIndex: selectedPhotoIndex)
         }
         .alert("일기 삭제", isPresented: $showDeleteAlert) {
             Button("취소", role: .cancel) { }
@@ -132,7 +138,7 @@ struct DayDetailView: View {
         .padding(.horizontal, 20)
         .background(
             RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white.opacity(0.85))
+                .fill(Color.white.withOpacity(0.85))
                 .shadow(color: .cardShadow, radius: 15, x: 0, y: 8)
         )
     }
@@ -177,7 +183,7 @@ struct DayDetailView: View {
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.diaryTextLight)
                         .frame(width: 32, height: 32)
-                        .background(Color.pastelPinkLight.opacity(0.5))
+                        .background(Color.pastelPinkLight.withOpacity(0.5))
                         .clipShape(Circle())
                 }
             }
@@ -196,11 +202,18 @@ struct DayDetailView: View {
                     HStack(spacing: 8) {
                         ForEach(entry.photoDataArray.indices, id: \.self) { index in
                             if let uiImage = UIImage(data: entry.photoDataArray[index]) {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 100, height: 100)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                Button {
+                                    selectedPhotoIndex = index
+                                    viewerPhotos = entry.photoDataArray
+                                    showPhotoViewer = true
+                                } label: {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -210,7 +223,7 @@ struct DayDetailView: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white.opacity(0.85))
+                .fill(Color.white.withOpacity(0.85))
                 .shadow(color: .cardShadow, radius: 15, x: 0, y: 8)
         )
     }
@@ -250,7 +263,7 @@ struct DayDetailView: View {
         .padding(.horizontal, 20)
         .background(
             Capsule()
-                .fill(Color.pastelYellow.opacity(0.5))
+                .fill(Color.pastelYellow.withOpacity(0.5))
         )
     }
 

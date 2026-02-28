@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 
+@available(iOS 17, *)
 @Model
 final class DiaryEntry {
     var id: UUID

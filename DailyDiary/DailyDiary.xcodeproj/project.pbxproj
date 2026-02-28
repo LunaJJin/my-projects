@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,8 @@
 		D93C359D0E7B2D8A611EBFDD /* DailyDiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555A768C819FC9EBA7C77EDF /* DailyDiaryApp.swift */; };
 		F1A991D3C089B4B529C568EF /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325E4DE3FCF73B587D0B3A41 /* Date+Extensions.swift */; };
 		F841B998346A0485A6160E91 /* DiaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DF31886E387D3233C3E1C37 /* DiaryEntry.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* PhotoViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */; };
+		B2C3D4E5F6A7B8C9D0E1F3A4 /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,13 +25,15 @@
 		325E4DE3FCF73B587D0B3A41 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		51F934F0A10509937D4B12C9 /* DayDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayDetailView.swift; sourceTree = "<group>"; };
 		555A768C819FC9EBA7C77EDF /* DailyDiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyDiaryApp.swift; sourceTree = "<group>"; };
-		65BE591A329AEEAFFB7E741E /* DailyDiary.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DailyDiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65BE591A329AEEAFFB7E741E /* DailyDiary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DailyDiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DF31886E387D3233C3E1C37 /* DiaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEntry.swift; sourceTree = "<group>"; };
 		B52C54E6A4F813E65D4F2EA7 /* Color+Pastel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Pastel.swift"; sourceTree = "<group>"; };
 		C997E37D8613A29A9EEB8A57 /* Sticker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sticker.swift; sourceTree = "<group>"; };
 		DD71972F994D263572B692A3 /* DiaryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEditorView.swift; sourceTree = "<group>"; };
 		E08C9174DAFBBC8C1E6FA2B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E7F0BE28530456CBCE2A03A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewerView.swift; sourceTree = "<group>"; };
+		D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -48,6 +52,8 @@
 				E7F0BE28530456CBCE2A03A0 /* ContentView.swift */,
 				51F934F0A10509937D4B12C9 /* DayDetailView.swift */,
 				DD71972F994D263572B692A3 /* DiaryEditorView.swift */,
+				C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */,
+				D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -134,7 +140,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					7E048612A5676D2C6EA86552 = {
 						DevelopmentTeam = "";
@@ -152,7 +158,6 @@
 			);
 			mainGroup = 69844D329723FF89B41074DE;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -185,6 +190,8 @@
 				D2C8765B8A3239642F1D46F4 /* DiaryEditorView.swift in Sources */,
 				F841B998346A0485A6160E91 /* DiaryEntry.swift in Sources */,
 				5CAEE33AABD4B84908DBA63B /* Sticker.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* PhotoViewerView.swift in Sources */,
+				B2C3D4E5F6A7B8C9D0E1F3A4 /* EmojiTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,6 +208,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = DailyDiary/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -224,6 +232,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = DailyDiary/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -274,6 +283,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -295,6 +305,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.9;
@@ -338,6 +349,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -352,6 +364,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.9;

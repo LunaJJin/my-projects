@@ -1,6 +1,11 @@
 import SwiftUI
+import UIKit
 
 extension Color {
+    func withOpacity(_ value: Double) -> Color {
+        Color(UIColor(self).withAlphaComponent(CGFloat(value)))
+    }
+
     // Main pastel theme colors
     static let pastelPink = Color(red: 255/255, green: 182/255, blue: 193/255)
     static let pastelPinkLight = Color(red: 255/255, green: 228/255, blue: 235/255)
@@ -19,8 +24,8 @@ extension Color {
     static let diaryTextMuted = Color(red: 200/255, green: 175/255, blue: 185/255)
 
     // Card & surface colors
-    static let cardBackground = Color.white.opacity(0.9)
-    static let cardShadow = Color(red: 255/255, green: 182/255, blue: 193/255).opacity(0.3)
+    static let cardBackground = Color(white: 1.0, opacity: 0.9)
+    static let cardShadow = Color(red: 255/255, green: 182/255, blue: 193/255, opacity: 0.3)
 }
 
 // Gradient presets
@@ -38,7 +43,7 @@ extension LinearGradient {
     )
 
     static let pastelCard = LinearGradient(
-        colors: [Color.white, Color.pastelPinkLight.opacity(0.3)],
+        colors: [Color.white, Color(red: 255/255, green: 228/255, blue: 235/255, opacity: 0.3)],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
