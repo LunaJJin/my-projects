@@ -16,6 +16,8 @@
 		B2C3D4E5F6A7B8C9D0E1F3A4 /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */; };
 		E3F4A5B6C7D8E9F0A1B2C3D4 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A5B6C7D8E9F0A1B2C3D4E5 /* SplashView.swift */; };
 		A5B6C7D8E9F0A1B2C3D4E5F6 /* CherryBlossomEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C7D8E9F0A1B2C3D4E5F6A7 /* CherryBlossomEffect.swift */; };
+		AA001122334455667788AABB /* DiaryReadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB001122334455667788AACC /* DiaryReadView.swift */; };
+		CC001122334455667788AADD /* DiaryDecorateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD001122334455667788AAEE /* DiaryDecorateView.swift */; };
 		D2C8765B8A3239642F1D46F4 /* DiaryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD71972F994D263572B692A3 /* DiaryEditorView.swift */; };
 		D93C359D0E7B2D8A611EBFDD /* DailyDiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555A768C819FC9EBA7C77EDF /* DailyDiaryApp.swift */; };
 		F1A991D3C089B4B529C568EF /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325E4DE3FCF73B587D0B3A41 /* Date+Extensions.swift */; };
@@ -35,6 +37,8 @@
 		D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 		F4A5B6C7D8E9F0A1B2C3D4E5 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		B6C7D8E9F0A1B2C3D4E5F6A7 /* CherryBlossomEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CherryBlossomEffect.swift; sourceTree = "<group>"; };
+		BB001122334455667788AACC /* DiaryReadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryReadView.swift; sourceTree = "<group>"; };
+		DD001122334455667788AAEE /* DiaryDecorateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryDecorateView.swift; sourceTree = "<group>"; };
 		DD71972F994D263572B692A3 /* DiaryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEditorView.swift; sourceTree = "<group>"; };
 		E08C9174DAFBBC8C1E6FA2B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E7F0BE28530456CBCE2A03A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -56,6 +60,8 @@
 				E7F0BE28530456CBCE2A03A0 /* ContentView.swift */,
 				51F934F0A10509937D4B12C9 /* DayDetailView.swift */,
 				DD71972F994D263572B692A3 /* DiaryEditorView.swift */,
+				BB001122334455667788AACC /* DiaryReadView.swift */,
+				DD001122334455667788AAEE /* DiaryDecorateView.swift */,
 				C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */,
 				D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */,
 				F4A5B6C7D8E9F0A1B2C3D4E5 /* SplashView.swift */,
@@ -199,6 +205,8 @@
 				B2C3D4E5F6A7B8C9D0E1F3A4 /* EmojiTextField.swift in Sources */,
 				E3F4A5B6C7D8E9F0A1B2C3D4 /* SplashView.swift in Sources */,
 				A5B6C7D8E9F0A1B2C3D4E5F6 /* CherryBlossomEffect.swift in Sources */,
+				AA001122334455667788AABB /* DiaryReadView.swift in Sources */,
+				CC001122334455667788AADD /* DiaryDecorateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

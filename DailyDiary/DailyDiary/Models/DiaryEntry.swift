@@ -11,6 +11,24 @@ final class DiaryEntry {
     var stickerEmoji: String
     var createdAt: Date
     var updatedAt: Date
+    var stickersData: Data = Data()
+    var textBlocksData: Data = Data()
+    var photosData: Data = Data()
+
+    var stickers: [DiarySticker] {
+        get { (try? JSONDecoder().decode([DiarySticker].self, from: stickersData)) ?? [] }
+        set { stickersData = (try? JSONEncoder().encode(newValue)) ?? Data() }
+    }
+
+    var textBlocks: [DiaryTextBlock] {
+        get { (try? JSONDecoder().decode([DiaryTextBlock].self, from: textBlocksData)) ?? [] }
+        set { textBlocksData = (try? JSONEncoder().encode(newValue)) ?? Data() }
+    }
+
+    var photos: [DiaryPhoto] {
+        get { (try? JSONDecoder().decode([DiaryPhoto].self, from: photosData)) ?? [] }
+        set { photosData = (try? JSONEncoder().encode(newValue)) ?? Data() }
+    }
 
     init(
         dateKey: String,
@@ -25,5 +43,8 @@ final class DiaryEntry {
         self.stickerEmoji = stickerEmoji
         self.createdAt = Date()
         self.updatedAt = Date()
+        self.stickersData = Data()
+        self.textBlocksData = Data()
+        self.photosData = Data()
     }
 }

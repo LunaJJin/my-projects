@@ -10,11 +10,8 @@ struct DayDetailView: View {
 
     @State private var showEditor = false
     @State private var editingEntry: DiaryEntry? = nil
-    @State private var showDeleteAlert = false
-    @State private var entryToDelete: DiaryEntry? = nil
-    @State private var showPhotoViewer = false
-    @State private var selectedPhotoIndex = 0
-    @State private var viewerPhotos: [Data] = []
+    @State private var selectedEntry: DiaryEntry? = nil
+    @State private var decorateEntry: DiaryEntry? = nil
 
     private var entries: [DiaryEntry] {
         allEntries
@@ -68,20 +65,15 @@ struct DayDetailView: View {
                 .presentationDetents([.large])
                 .presentationCornerRadius(32)
         }
-        .fullScreenCover(isPresented: $showPhotoViewer) {
-            PhotoViewerView(photos: viewerPhotos, currentIndex: selectedPhotoIndex)
+        .sheet(item: $selectedEntry) { entry in
+            DiaryReadView(entry: entry)
+                .presentationDetents([.large])
+                .presentationCornerRadius(32)
         }
-        .alert("일기 삭제", isPresented: $showDeleteAlert) {
-            Button("취소", role: .cancel) { }
-            Button("삭제", role: .destructive) {
-                if let entry = entryToDelete {
-                    withAnimation {
-                        modelContext.delete(entry)
-                    }
-                }
-            }
-        } message: {
-            Text("이 일기를 정말 삭제할까요?\n삭제하면 되돌릴 수 없어요.")
+        .sheet(item: $decorateEntry) { entry in
+            DiaryDecorateView(entry: entry)
+                .presentationDetents([.large])
+                .presentationCornerRadius(32)
         }
     }
 
@@ -145,83 +137,96 @@ struct DayDetailView: View {
     }
 
     private func diaryCard(entry: DiaryEntry) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header with sticker & time
-            HStack {
-                Text(entry.stickerEmoji)
-                    .font(.system(size: 28))
+        VStack(alignment: .leading, spacing: 0) {
+            // 카드 본문 → 탭하면 뷰어
+            Button {
+                selectedEntry = entry
+            } label: {
+                VStack(alignment: .leading, spacing: 12) {
+                    // Header
+                    HStack {
+                        Text(entry.stickerEmoji)
+                            .font(.system(size: 28))
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(timeString(from: entry.createdAt))
-                        .font(.system(size: 13, weight: .medium, design: .rounded))
-                        .foregroundColor(.diaryTextLight)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(timeString(from: entry.createdAt))
+                                .font(.system(size: 13, weight: .medium, design: .rounded))
+                                .foregroundColor(.diaryTextLight)
 
-                    if entry.updatedAt.timeIntervalSince(entry.createdAt) > 60 {
-                        Text("수정됨")
-                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            if entry.updatedAt.timeIntervalSince(entry.createdAt) > 60 {
+                                Text("수정됨")
+                                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                                    .foregroundColor(.diaryTextMuted)
+                            }
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.diaryTextMuted)
                     }
-                }
 
-                Spacer()
-
-                Menu {
-                    Button {
-                        editingEntry = entry
-                        showEditor = true
-                    } label: {
-                        Label("수정", systemImage: "pencil")
+                    // 내용 2줄 미리보기
+                    if !entry.content.isEmpty {
+                        Text(entry.content)
+                            .font(.system(size: 15, design: .rounded))
+                            .foregroundColor(.diaryText)
+                            .lineSpacing(4)
+                            .lineLimit(2)
                     }
 
-                    Button(role: .destructive) {
-                        entryToDelete = entry
-                        showDeleteAlert = true
-                    } label: {
-                        Label("삭제", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.diaryTextLight)
-                        .frame(width: 32, height: 32)
-                        .background(Color.pastelPinkLight.withOpacity(0.5))
-                        .clipShape(Circle())
-                }
-            }
-
-            // Content
-            if !entry.content.isEmpty {
-                Text(entry.content)
-                    .font(.system(size: 15, design: .rounded))
-                    .foregroundColor(.diaryText)
-                    .lineSpacing(4)
-            }
-
-            // Photos
-            if !entry.photoDataArray.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(entry.photoDataArray.indices, id: \.self) { index in
-                            if let uiImage = UIImage(data: entry.photoDataArray[index]) {
-                                Button {
-                                    selectedPhotoIndex = index
-                                    viewerPhotos = entry.photoDataArray
-                                    showPhotoViewer = true
-                                } label: {
+                    // 사진 썸네일
+                    if !entry.photoDataArray.isEmpty {
+                        HStack(spacing: 6) {
+                            ForEach(entry.photoDataArray.prefix(3).indices, id: \.self) { index in
+                                if let uiImage = UIImage(data: entry.photoDataArray[index]) {
                                     Image(uiImage: uiImage)
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: 100, height: 100)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                        .frame(width: 60, height: 60)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
                                 }
-                                .buttonStyle(.plain)
+                            }
+                            if entry.photoDataArray.count > 3 {
+                                Text("+\(entry.photoDataArray.count - 3)")
+                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.diaryTextLight)
+                                    .frame(width: 60, height: 60)
+                                    .background(Color.pastelPinkLight.withOpacity(0.5))
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
                         }
                     }
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 14)
             }
+            .buttonStyle(.plain)
+
+            // 구분선
+            Rectangle()
+                .fill(Color.pastelPinkLight.withOpacity(0.6))
+                .frame(height: 1)
+                .padding(.horizontal, 16)
+
+            // 스티커 붙이기 버튼
+            Button {
+                decorateEntry = entry
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "wand.and.stars")
+                        .font(.system(size: 14, weight: .semibold))
+                    Text("스티커 붙이기")
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                }
+                .foregroundColor(.pastelPink)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+            }
+            .buttonStyle(.plain)
         }
-        .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 24)
                 .fill(Color.white.withOpacity(0.85))

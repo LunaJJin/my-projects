@@ -10,6 +10,8 @@ struct ContentView: View {
     @State private var showDayDetail = false
     @State private var showDatePicker = false
     @State private var pickerDate = Date()
+    @State private var readerEntry: DiaryEntry? = nil
+    @State private var decorateEntry: DiaryEntry? = nil
 
     private var entriesByDateKey: [String: [DiaryEntry]] {
         Dictionary(grouping: allEntries, by: \.dateKey)
@@ -37,6 +39,16 @@ struct ContentView: View {
                 if let date = selectedDate {
                     DayDetailView(date: date)
                 }
+            }
+            .sheet(item: $readerEntry) { entry in
+                DiaryReadView(entry: entry)
+                    .presentationDetents([.large])
+                    .presentationCornerRadius(32)
+            }
+            .sheet(item: $decorateEntry) { entry in
+                DiaryDecorateView(entry: entry)
+                    .presentationDetents([.large])
+                    .presentationCornerRadius(32)
             }
         }
     }
@@ -274,21 +286,39 @@ struct ContentView: View {
                 VStack(spacing: 8) {
                     ForEach(entries) { entry in
                         HStack(spacing: 10) {
-                            Text(entry.stickerEmoji)
-                                .font(.system(size: 20))
-
-                            Text(entry.content.isEmpty ? "내용 없음" : entry.content)
-                                .font(.system(size: 13, design: .rounded))
-                                .foregroundColor(.diaryText)
-                                .lineLimit(1)
-
-                            Spacer()
-
-                            if !entry.photoDataArray.isEmpty {
-                                Image(systemName: "photo")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.diaryTextMuted)
+                            // 탭 → 뷰어
+                            Button {
+                                readerEntry = entry
+                            } label: {
+                                HStack(spacing: 10) {
+                                    Text(entry.stickerEmoji)
+                                        .font(.system(size: 20))
+                                    Text(entry.content.isEmpty ? "내용 없음" : entry.content)
+                                        .font(.system(size: 13, design: .rounded))
+                                        .foregroundColor(.diaryText)
+                                        .lineLimit(1)
+                                    Spacer()
+                                    if !entry.photoDataArray.isEmpty {
+                                        Image(systemName: "photo")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.diaryTextMuted)
+                                    }
+                                }
                             }
+                            .buttonStyle(.plain)
+
+                            // 스티커 버튼
+                            Button {
+                                decorateEntry = entry
+                            } label: {
+                                Image(systemName: "wand.and.stars")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.pastelPink)
+                                    .frame(width: 32, height: 32)
+                                    .background(Color.pastelPinkLight.withOpacity(0.5))
+                                    .clipShape(Circle())
+                            }
+                            .buttonStyle(.plain)
                         }
                         .padding(12)
                         .background(
