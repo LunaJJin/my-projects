@@ -12,12 +12,14 @@
 		26891F6A394DE2F0D4D6AB61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 259265A3195A29E02183E073 /* Assets.xcassets */; };
 		5CAEE33AABD4B84908DBA63B /* Sticker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C997E37D8613A29A9EEB8A57 /* Sticker.swift */; };
 		6AC7D2D4FF9105D430277CA0 /* DayDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F934F0A10509937D4B12C9 /* DayDetailView.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* PhotoViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */; };
+		B2C3D4E5F6A7B8C9D0E1F3A4 /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */; };
+		E3F4A5B6C7D8E9F0A1B2C3D4 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A5B6C7D8E9F0A1B2C3D4E5 /* SplashView.swift */; };
+		A5B6C7D8E9F0A1B2C3D4E5F6 /* CherryBlossomEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C7D8E9F0A1B2C3D4E5F6A7 /* CherryBlossomEffect.swift */; };
 		D2C8765B8A3239642F1D46F4 /* DiaryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD71972F994D263572B692A3 /* DiaryEditorView.swift */; };
 		D93C359D0E7B2D8A611EBFDD /* DailyDiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555A768C819FC9EBA7C77EDF /* DailyDiaryApp.swift */; };
 		F1A991D3C089B4B529C568EF /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325E4DE3FCF73B587D0B3A41 /* Date+Extensions.swift */; };
 		F841B998346A0485A6160E91 /* DiaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DF31886E387D3233C3E1C37 /* DiaryEntry.swift */; };
-		A1B2C3D4E5F6A7B8C9D0E1F2 /* PhotoViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */; };
-		B2C3D4E5F6A7B8C9D0E1F3A4 /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,12 +30,14 @@
 		65BE591A329AEEAFFB7E741E /* DailyDiary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DailyDiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DF31886E387D3233C3E1C37 /* DiaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEntry.swift; sourceTree = "<group>"; };
 		B52C54E6A4F813E65D4F2EA7 /* Color+Pastel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Pastel.swift"; sourceTree = "<group>"; };
+		C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewerView.swift; sourceTree = "<group>"; };
 		C997E37D8613A29A9EEB8A57 /* Sticker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sticker.swift; sourceTree = "<group>"; };
+		D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
+		F4A5B6C7D8E9F0A1B2C3D4E5 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		B6C7D8E9F0A1B2C3D4E5F6A7 /* CherryBlossomEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CherryBlossomEffect.swift; sourceTree = "<group>"; };
 		DD71972F994D263572B692A3 /* DiaryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEditorView.swift; sourceTree = "<group>"; };
 		E08C9174DAFBBC8C1E6FA2B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E7F0BE28530456CBCE2A03A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewerView.swift; sourceTree = "<group>"; };
-		D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -54,6 +58,8 @@
 				DD71972F994D263572B692A3 /* DiaryEditorView.swift */,
 				C1D2E3F4A5B6C7D8E9F0A1B2 /* PhotoViewerView.swift */,
 				D2E3F4A5B6C7D8E9F0A1B2C3 /* EmojiTextField.swift */,
+				F4A5B6C7D8E9F0A1B2C3D4E5 /* SplashView.swift */,
+				B6C7D8E9F0A1B2C3D4E5F6A7 /* CherryBlossomEffect.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -143,7 +149,6 @@
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					7E048612A5676D2C6EA86552 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -192,6 +197,8 @@
 				5CAEE33AABD4B84908DBA63B /* Sticker.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* PhotoViewerView.swift in Sources */,
 				B2C3D4E5F6A7B8C9D0E1F3A4 /* EmojiTextField.swift in Sources */,
+				E3F4A5B6C7D8E9F0A1B2C3D4 /* SplashView.swift in Sources */,
+				A5B6C7D8E9F0A1B2C3D4E5F6 /* CherryBlossomEffect.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,7 +213,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 699K7757N6;
 				INFOPLIST_FILE = DailyDiary/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -214,7 +221,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dailydiary.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lunajjin.dailydiary;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -230,7 +237,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 699K7757N6;
 				INFOPLIST_FILE = DailyDiary/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -238,7 +245,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dailydiary.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lunajjin.dailydiary;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

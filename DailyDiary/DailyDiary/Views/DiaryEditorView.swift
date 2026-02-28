@@ -15,6 +15,8 @@ struct DiaryEditorView: View {
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var showEmojiPicker = false
     @State private var showDiscardAlert = false
+    @State private var showSaveEffect = false
+    @FocusState private var isEditorFocused: Bool
 
     private var isEditing: Bool {
         existingEntry != nil
@@ -44,6 +46,11 @@ struct DiaryEditorView: View {
                     .padding(16)
                     .padding(.bottom, 30)
                 }
+
+                if showSaveEffect {
+                    CherryBlossomEffect()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             }
             .navigationTitle(isEditing ? "일기 수정" : "새 일기")
             .navigationBarTitleDisplayMode(.inline)
@@ -64,7 +71,10 @@ struct DiaryEditorView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         save()
-                        dismiss()
+                        showSaveEffect = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            dismiss()
+                        }
                     } label: {
                         Text("저장")
                             .font(.system(size: 16, weight: .bold, design: .rounded))
@@ -162,7 +172,7 @@ struct DiaryEditorView: View {
             }
 
             ZStack(alignment: .topLeading) {
-                if content.isEmpty {
+                if content.isEmpty && !isEditorFocused {
                     Text("오늘 하루는 어땠나요?\n자유롭게 적어보세요...")
                         .font(.system(size: 15, design: .rounded))
                         .foregroundColor(.diaryTextMuted)
@@ -176,6 +186,7 @@ struct DiaryEditorView: View {
                     .scrollContentBackground(.hidden)
                     .frame(minHeight: 200)
                     .padding(4)
+                    .focused($isEditorFocused)
             }
             .padding(16)
             .background(

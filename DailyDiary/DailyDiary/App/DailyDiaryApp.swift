@@ -5,7 +5,7 @@ import SwiftData
 struct DailyDiaryApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
         }
         .modelContainer(for: DiaryEntry.self)
     }

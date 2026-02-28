@@ -121,8 +121,9 @@ struct DayDetailView: View {
 
     private var emptyState: some View {
         VStack(spacing: 16) {
-            Text("📝")
-                .font(.system(size: 50))
+            Image("flower")
+                .resizable()
+                .frame(width: 80, height: 80)
 
             Text("아직 일기가 없어요")
                 .font(.system(size: 18, weight: .bold, design: .rounded))

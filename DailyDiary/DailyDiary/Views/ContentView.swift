@@ -8,6 +8,8 @@ struct ContentView: View {
     @State private var currentMonth = Date()
     @State private var selectedDate: Date? = nil
     @State private var showDayDetail = false
+    @State private var showDatePicker = false
+    @State private var pickerDate = Date()
 
     private var entriesByDateKey: [String: [DiaryEntry]] {
         Dictionary(grouping: allEntries, by: \.dateKey)
@@ -86,9 +88,30 @@ struct ContentView: View {
 
             Spacer()
 
-            Text(currentMonth.koreanMonthString)
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .foregroundColor(.diaryText)
+            Button {
+                pickerDate = currentMonth
+                showDatePicker = true
+            } label: {
+                HStack(spacing: 4) {
+                    Text(currentMonth.koreanMonthString)
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundColor(.diaryText)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.diaryTextLight)
+                }
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $showDatePicker) {
+                DatePickerSheet(pickerDate: $pickerDate) { selected in
+                    withAnimation(.spring(response: 0.3)) {
+                        currentMonth = selected
+                        selectedDate = selected
+                    }
+                }
+                .presentationDetents([.height(320)])
+                .presentationCornerRadius(28)
+            }
 
             Spacer()
 
@@ -283,6 +306,47 @@ struct ContentView: View {
                 .shadow(color: .cardShadow, radius: 15, x: 0, y: 8)
         )
         .transition(.move(edge: .bottom).combined(with: .opacity))
+    }
+}
+
+struct DatePickerSheet: View {
+    @Binding var pickerDate: Date
+    @Environment(\.dismiss) private var dismiss
+    let onConfirm: (Date) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Button("취소") {
+                    dismiss()
+                }
+                .font(.system(size: 16, weight: .medium, design: .rounded))
+                .foregroundColor(.diaryTextLight)
+
+                Spacer()
+
+                Text("날짜 이동")
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .foregroundColor(.diaryText)
+
+                Spacer()
+
+                Button("확인") {
+                    onConfirm(pickerDate)
+                    dismiss()
+                }
+                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .foregroundColor(.pastelPink)
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 20)
+            .padding(.bottom, 8)
+
+            DatePicker("", selection: $pickerDate, displayedComponents: [.date])
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+                .environment(\.locale, Locale(identifier: "ko_KR"))
+        }
     }
 }
 
