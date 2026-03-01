@@ -11,7 +11,6 @@ struct ContentView: View {
     @State private var showDatePicker = false
     @State private var pickerDate = Date()
     @State private var readerEntry: DiaryEntry? = nil
-    @State private var decorateEntry: DiaryEntry? = nil
 
     private var entriesByDateKey: [String: [DiaryEntry]] {
         Dictionary(grouping: allEntries, by: \.dateKey)
@@ -45,11 +44,7 @@ struct ContentView: View {
                     .presentationDetents([.large])
                     .presentationCornerRadius(32)
             }
-            .sheet(item: $decorateEntry) { entry in
-                DiaryDecorateView(entry: entry)
-                    .presentationDetents([.large])
-                    .presentationCornerRadius(32)
-            }
+
         }
     }
 
@@ -307,18 +302,6 @@ struct ContentView: View {
                             }
                             .buttonStyle(.plain)
 
-                            // 스티커 버튼
-                            Button {
-                                decorateEntry = entry
-                            } label: {
-                                Image(systemName: "wand.and.stars")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.pastelPink)
-                                    .frame(width: 32, height: 32)
-                                    .background(Color.pastelPinkLight.withOpacity(0.5))
-                                    .clipShape(Circle())
-                            }
-                            .buttonStyle(.plain)
                         }
                         .padding(12)
                         .background(

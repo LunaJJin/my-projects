@@ -13,7 +13,7 @@ final class DiaryEntry {
     var updatedAt: Date
     var stickersData: Data = Data()
     var textBlocksData: Data = Data()
-    var photosData: Data = Data()
+    var canvasPhotosData: Data = Data()
 
     var stickers: [DiarySticker] {
         get { (try? JSONDecoder().decode([DiarySticker].self, from: stickersData)) ?? [] }
@@ -25,9 +25,9 @@ final class DiaryEntry {
         set { textBlocksData = (try? JSONEncoder().encode(newValue)) ?? Data() }
     }
 
-    var photos: [DiaryPhoto] {
-        get { (try? JSONDecoder().decode([DiaryPhoto].self, from: photosData)) ?? [] }
-        set { photosData = (try? JSONEncoder().encode(newValue)) ?? Data() }
+    var canvasPhotos: [DiaryPhoto] {
+        get { (try? JSONDecoder().decode([DiaryPhoto].self, from: canvasPhotosData)) ?? [] }
+        set { canvasPhotosData = (try? JSONEncoder().encode(newValue)) ?? Data() }
     }
 
     init(
@@ -45,6 +45,6 @@ final class DiaryEntry {
         self.updatedAt = Date()
         self.stickersData = Data()
         self.textBlocksData = Data()
-        self.photosData = Data()
+        self.canvasPhotosData = Data()
     }
 }

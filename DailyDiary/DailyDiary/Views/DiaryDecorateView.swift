@@ -15,6 +15,8 @@ struct DiaryDecorateView: View {
     @State private var stickers: [DiarySticker] = []
     @State private var showPicker = false
     @State private var selectedStickerID: UUID? = nil
+    @State private var showDeleteZone = false
+    @State private var overDeleteZone = false
 
     var body: some View {
         NavigationStack {
@@ -29,7 +31,7 @@ struct DiaryDecorateView: View {
                         .frame(width: geo.size.width, height: geo.size.height)
 
                     // 사진 레이어 (읽기전용)
-                    ForEach(entry.photos) { photo in
+                    ForEach(entry.canvasPhotos) { photo in
                         if let uiImage = UIImage(data: photo.data) {
                             Image(uiImage: uiImage)
                                 .resizable()
@@ -54,9 +56,18 @@ struct DiaryDecorateView: View {
                             sticker: $sticker,
                             isSelected: selectedStickerID == sticker.id,
                             canvasSize: geo.size,
+                            showDeleteZone: $showDeleteZone,
+                            overDeleteZone: $overDeleteZone,
                             onTap: { selectedStickerID = sticker.id },
                             onDelete: { removeSticker(id: sticker.id) }
                         )
+                    }
+
+                    // 삭제 존 (드래그 중 하단 표시)
+                    if showDeleteZone {
+                        DeleteZoneView(over: overDeleteZone)
+                            .allowsHitTesting(false)
+                            .position(x: geo.size.width / 2, y: geo.size.height - 100)
                     }
                 }
                 .contentShape(Rectangle())
@@ -146,7 +157,7 @@ struct DiaryDecorateView: View {
             .padding(.top, 12)
 
             // 구버전 일기 fallback: photos 없으면 photoDataArray 스트립 표시
-            if entry.photos.isEmpty && !entry.photoDataArray.isEmpty {
+            if entry.canvasPhotos.isEmpty && !entry.photoDataArray.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(entry.photoDataArray.indices, id: \.self) { i in
@@ -191,79 +202,75 @@ struct StickerImageView: View {
     @Binding var sticker: DiarySticker
     let isSelected: Bool
     let canvasSize: CGSize
+    @Binding var showDeleteZone: Bool
+    @Binding var overDeleteZone: Bool
     let onTap: () -> Void
     let onDelete: () -> Void
 
     @GestureState private var dragOffset: CGSize = .zero
     @GestureState private var gestureScale: CGFloat = 1.0
     @GestureState private var gestureRotation: Angle = .zero
-    @State private var showDeleteButton = false
 
     private let baseSize: CGFloat = 90
 
+    private func checkOverDelete(_ t: CGSize) -> Bool {
+        let cx = sticker.x + t.width
+        let cy = sticker.y + t.height
+        return hypot(cx - canvasSize.width / 2, cy - (canvasSize.height - 100)) < 60
+    }
+
     var body: some View {
-        ZStack {
-            Image(sticker.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: baseSize, height: baseSize)
-                .scaleEffect(sticker.scale * gestureScale)
-                .rotationEffect(.degrees(sticker.rotation) + gestureRotation)
-                .offset(dragOffset)
-                .position(x: sticker.x, y: sticker.y)
-                .overlay {
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.pastelPink.withOpacity(0.8), lineWidth: 1.5)
-                            .frame(
-                                width: baseSize * sticker.scale * gestureScale + 10,
-                                height: baseSize * sticker.scale * gestureScale + 10
-                            )
-                            .rotationEffect(.degrees(sticker.rotation) + gestureRotation)
-                            .offset(dragOffset)
-                            .position(x: sticker.x, y: sticker.y)
-                    }
+        Image(sticker.imageName)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: baseSize, height: baseSize)
+            .scaleEffect(sticker.scale * gestureScale)
+            .rotationEffect(.degrees(sticker.rotation) + gestureRotation)
+            .offset(dragOffset)
+            .position(x: sticker.x, y: sticker.y)
+            .overlay {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.pastelPink.withOpacity(0.8), lineWidth: 1.5)
+                        .frame(
+                            width: baseSize * sticker.scale * gestureScale + 10,
+                            height: baseSize * sticker.scale * gestureScale + 10
+                        )
+                        .rotationEffect(.degrees(sticker.rotation) + gestureRotation)
+                        .offset(dragOffset)
+                        .position(x: sticker.x, y: sticker.y)
                 }
-                .gesture(
-                    SimultaneousGesture(
-                        DragGesture()
-                            .updating($dragOffset) { v, s, _ in s = v.translation }
-                            .onEnded { v in
+            }
+            .gesture(
+                SimultaneousGesture(
+                    DragGesture()
+                        .updating($dragOffset) { v, s, _ in s = v.translation }
+                        .onChanged { v in
+                            if !showDeleteZone { showDeleteZone = true }
+                            overDeleteZone = checkOverDelete(v.translation)
+                        }
+                        .onEnded { v in
+                            if checkOverDelete(v.translation) {
+                                onDelete()
+                            } else {
                                 sticker.x = min(max(sticker.x + v.translation.width, 0), canvasSize.width)
                                 sticker.y = min(max(sticker.y + v.translation.height, 0), canvasSize.height)
-                            },
-                        SimultaneousGesture(
-                            MagnificationGesture()
-                                .updating($gestureScale) { v, s, _ in s = v }
-                                .onEnded { v in sticker.scale = max(0.3, min(sticker.scale * v, 5.0)) },
-                            RotationGesture()
-                                .updating($gestureRotation) { v, s, _ in s = v }
-                                .onEnded { v in sticker.rotation += v.degrees }
-                        )
+                            }
+                            showDeleteZone = false
+                            overDeleteZone = false
+                        },
+                    SimultaneousGesture(
+                        MagnificationGesture()
+                            .updating($gestureScale) { v, s, _ in s = v }
+                            .onEnded { v in sticker.scale = max(0.3, min(sticker.scale * v, 5.0)) },
+                        RotationGesture()
+                            .updating($gestureRotation) { v, s, _ in s = v }
+                            .onEnded { v in sticker.rotation += v.degrees }
                     )
                 )
-                .onTapGesture { onTap() }
-                .onLongPressGesture {
-                    onTap()
-                    showDeleteButton = true
-                }
-
-            if isSelected && showDeleteButton {
-                Button(action: onDelete) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 22))
-                        .foregroundStyle(.white, .red)
-                        .shadow(radius: 2)
-                }
-                .position(
-                    x: sticker.x + baseSize * sticker.scale / 2 + 4,
-                    y: sticker.y - baseSize * sticker.scale / 2 - 4
-                )
-            }
-        }
-        .onChange(of: isSelected) { _, newVal in
-            if !newVal { showDeleteButton = false }
-        }
+            )
+            .onTapGesture { onTap() }
+            .onLongPressGesture { onTap() }
     }
 }
 
@@ -272,6 +279,8 @@ struct TextBlockView: View {
     @Binding var block: DiaryTextBlock
     let isSelected: Bool
     let canvasSize: CGSize
+    @Binding var showDeleteZone: Bool
+    @Binding var overDeleteZone: Bool
     let onTap: () -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
@@ -279,77 +288,75 @@ struct TextBlockView: View {
     @GestureState private var dragOffset: CGSize = .zero
     @GestureState private var gestureScale: CGFloat = 1.0
     @GestureState private var gestureRotation: Angle = .zero
-    @State private var showDeleteButton = false
 
     private var textColor: Color {
         switch block.colorName {
         case "white": return .white
-        case "pink": return .pastelPink
-        default: return .diaryText
+        case "pink":  return .pastelPink
+        default:      return .diaryText
         }
     }
 
-    var body: some View {
-        ZStack(alignment: .topTrailing) {
-            Text(block.text)
-                .font(.system(size: block.fontSize, weight: block.isBold ? .bold : .regular, design: .rounded))
-                .foregroundColor(textColor)
-                .multilineTextAlignment(.center)
-                .lineLimit(nil)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: 260)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
-                .shadow(color: block.colorName == "white" ? Color.black.opacity(0.4) : .clear, radius: 3)
-                .overlay {
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: 6)
-                            .strokeBorder(Color.pastelPink.withOpacity(0.8), lineWidth: 1.5)
-                    }
-                }
+    private func checkOverDelete(_ t: CGSize) -> Bool {
+        let cx = block.x + t.width
+        let cy = block.y + t.height
+        return hypot(cx - canvasSize.width / 2, cy - (canvasSize.height - 100)) < 60
+    }
 
-            if isSelected && showDeleteButton {
-                Button(action: onDelete) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 22))
-                        .foregroundStyle(.white, .red)
-                        .shadow(radius: 2)
+    var body: some View {
+        Text(block.text)
+            .font(.system(size: block.fontSize, weight: block.isBold ? .bold : .regular, design: .rounded))
+            .foregroundColor(textColor)
+            .multilineTextAlignment(.center)
+            .lineLimit(nil)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(width: 260)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .shadow(color: block.colorName == "white" ? Color.black.opacity(0.4) : .clear, radius: 3)
+            .overlay {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: 6)
+                        .strokeBorder(Color.pastelPink.withOpacity(0.8), lineWidth: 1.5)
                 }
-                .offset(x: 11, y: -11)
             }
-        }
-        .scaleEffect(block.scale * gestureScale)
-        .rotationEffect(.degrees(block.rotation) + gestureRotation)
-        .offset(dragOffset)
-        .position(x: block.x, y: block.y)
-        .gesture(
-            SimultaneousGesture(
-                DragGesture()
-                    .updating($dragOffset) { v, s, _ in s = v.translation }
-                    .onEnded { v in
-                        block.x = min(max(block.x + v.translation.width, 0), canvasSize.width)
-                        block.y = min(max(block.y + v.translation.height, 0), canvasSize.height)
-                    },
+            .contentShape(Rectangle())
+            .scaleEffect(block.scale * gestureScale)
+            .rotationEffect(.degrees(block.rotation) + gestureRotation)
+            .offset(dragOffset)
+            .position(x: block.x, y: block.y)
+            .gesture(
                 SimultaneousGesture(
-                    MagnificationGesture()
-                        .updating($gestureScale) { v, s, _ in s = v }
-                        .onEnded { v in block.scale = max(0.3, min(block.scale * v, 5.0)) },
-                    RotationGesture()
-                        .updating($gestureRotation) { v, s, _ in s = v }
-                        .onEnded { v in block.rotation += v.degrees }
+                    DragGesture()
+                        .updating($dragOffset) { v, s, _ in s = v.translation }
+                        .onChanged { v in
+                            if !showDeleteZone { showDeleteZone = true }
+                            overDeleteZone = checkOverDelete(v.translation)
+                        }
+                        .onEnded { v in
+                            if checkOverDelete(v.translation) {
+                                onDelete()
+                            } else {
+                                block.x = min(max(block.x + v.translation.width, 0), canvasSize.width)
+                                block.y = min(max(block.y + v.translation.height, 0), canvasSize.height)
+                            }
+                            showDeleteZone = false
+                            overDeleteZone = false
+                        },
+                    SimultaneousGesture(
+                        MagnificationGesture()
+                            .updating($gestureScale) { v, s, _ in s = v }
+                            .onEnded { v in block.scale = max(0.3, min(block.scale * v, 5.0)) },
+                        RotationGesture()
+                            .updating($gestureRotation) { v, s, _ in s = v }
+                            .onEnded { v in block.rotation += v.degrees }
+                    )
                 )
             )
-        )
-        .onTapGesture {
-            if isSelected { onEdit() } else { onTap() }
-        }
-        .onLongPressGesture {
-            onTap()
-            showDeleteButton = true
-        }
-        .onChange(of: isSelected) { _, newVal in
-            if !newVal { showDeleteButton = false }
-        }
+            .onTapGesture {
+                if isSelected { onEdit() } else { onTap() }
+            }
+            .onLongPressGesture { onTap() }
     }
 }
 
@@ -358,78 +365,77 @@ struct PhotoCanvasView: View {
     @Binding var photo: DiaryPhoto
     let isSelected: Bool
     let canvasSize: CGSize
+    @Binding var showDeleteZone: Bool
+    @Binding var overDeleteZone: Bool
     let onTap: () -> Void
     let onDelete: () -> Void
 
     @GestureState private var dragOffset: CGSize = .zero
     @GestureState private var gestureScale: CGFloat = 1.0
     @GestureState private var gestureRotation: Angle = .zero
-    @State private var showDeleteButton = false
 
     private let baseSize: CGFloat = 150
 
+    private func checkOverDelete(_ t: CGSize) -> Bool {
+        let cx = photo.x + t.width
+        let cy = photo.y + t.height
+        return hypot(cx - canvasSize.width / 2, cy - (canvasSize.height - 100)) < 60
+    }
+
     var body: some View {
-        ZStack {
-            if let uiImage = UIImage(data: photo.data) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: baseSize, height: baseSize)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .scaleEffect(photo.scale * gestureScale)
-                    .rotationEffect(.degrees(photo.rotation) + gestureRotation)
-                    .offset(dragOffset)
-                    .position(x: photo.x, y: photo.y)
-                    .overlay {
-                        if isSelected {
-                            RoundedRectangle(cornerRadius: 14)
-                                .strokeBorder(Color.pastelPink.withOpacity(0.8), lineWidth: 1.5)
-                                .frame(
-                                    width: baseSize * photo.scale * gestureScale + 10,
-                                    height: baseSize * photo.scale * gestureScale + 10
-                                )
-                                .rotationEffect(.degrees(photo.rotation) + gestureRotation)
-                                .offset(dragOffset)
-                                .position(x: photo.x, y: photo.y)
-                        }
+        if let uiImage = UIImage(data: photo.data) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: baseSize, height: baseSize)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .scaleEffect(photo.scale * gestureScale)
+                .rotationEffect(.degrees(photo.rotation) + gestureRotation)
+                .offset(dragOffset)
+                .position(x: photo.x, y: photo.y)
+                .overlay {
+                    if isSelected {
+                        RoundedRectangle(cornerRadius: 14)
+                            .strokeBorder(Color.pastelPink.withOpacity(0.8), lineWidth: 1.5)
+                            .frame(
+                                width: baseSize * photo.scale * gestureScale + 10,
+                                height: baseSize * photo.scale * gestureScale + 10
+                            )
+                            .rotationEffect(.degrees(photo.rotation) + gestureRotation)
+                            .offset(dragOffset)
+                            .position(x: photo.x, y: photo.y)
                     }
-                    .gesture(
-                        SimultaneousGesture(
-                            DragGesture()
-                                .updating($dragOffset) { v, s, _ in s = v.translation }
-                                .onEnded { v in
+                }
+                .gesture(
+                    SimultaneousGesture(
+                        DragGesture()
+                            .updating($dragOffset) { v, s, _ in s = v.translation }
+                            .onChanged { v in
+                                if !showDeleteZone { showDeleteZone = true }
+                                overDeleteZone = checkOverDelete(v.translation)
+                            }
+                            .onEnded { v in
+                                if checkOverDelete(v.translation) {
+                                    onDelete()
+                                } else {
                                     photo.x = min(max(photo.x + v.translation.width, 0), canvasSize.width)
                                     photo.y = min(max(photo.y + v.translation.height, 0), canvasSize.height)
-                                },
-                            SimultaneousGesture(
-                                MagnificationGesture()
-                                    .updating($gestureScale) { v, s, _ in s = v }
-                                    .onEnded { v in photo.scale = max(0.2, min(photo.scale * v, 5.0)) },
-                                RotationGesture()
-                                    .updating($gestureRotation) { v, s, _ in s = v }
-                                    .onEnded { v in photo.rotation += v.degrees }
-                            )
+                                }
+                                showDeleteZone = false
+                                overDeleteZone = false
+                            },
+                        SimultaneousGesture(
+                            MagnificationGesture()
+                                .updating($gestureScale) { v, s, _ in s = v }
+                                .onEnded { v in photo.scale = max(0.2, min(photo.scale * v, 5.0)) },
+                            RotationGesture()
+                                .updating($gestureRotation) { v, s, _ in s = v }
+                                .onEnded { v in photo.rotation += v.degrees }
                         )
                     )
-                    .onTapGesture { onTap() }
-                    .onLongPressGesture { onTap(); showDeleteButton = true }
-            }
-
-            if isSelected && showDeleteButton {
-                Button(action: onDelete) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 22))
-                        .foregroundStyle(.white, .red)
-                        .shadow(radius: 2)
-                }
-                .position(
-                    x: photo.x + baseSize * photo.scale / 2 + 4,
-                    y: photo.y - baseSize * photo.scale / 2 - 4
                 )
-            }
-        }
-        .onChange(of: isSelected) { _, newVal in
-            if !newVal { showDeleteButton = false }
+                .onTapGesture { onTap() }
+                .onLongPressGesture { onTap() }
         }
     }
 }
@@ -470,5 +476,23 @@ struct StickerPickerSheet: View {
             }
         }
         .background(LinearGradient.pastelBackground.ignoresSafeArea())
+    }
+}
+
+// MARK: - DeleteZoneView
+struct DeleteZoneView: View {
+    let over: Bool
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(over ? Color.red.opacity(0.88) : Color.black.opacity(0.55))
+                .frame(width: 68, height: 68)
+            Image(systemName: over ? "trash.fill" : "trash")
+                .font(.system(size: 24, weight: .medium))
+                .foregroundColor(.white)
+        }
+        .scaleEffect(over ? 1.2 : 1.0)
+        .animation(.spring(response: 0.25, dampingFraction: 0.65), value: over)
     }
 }

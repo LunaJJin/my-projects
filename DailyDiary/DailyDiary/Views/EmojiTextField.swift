@@ -10,7 +10,7 @@ struct EmojiTextField: UIViewRepresentable {
         tf.delegate = context.coordinator
         tf.textAlignment = .center
         tf.font = UIFont.systemFont(ofSize: 50)
-        tf.placeholder = "😊"
+        tf.tintColor = .clear
         tf.borderStyle = .none
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             tf.becomeFirstResponder()

@@ -57,7 +57,7 @@ struct DiaryReadView: View {
                         Spacer()
 
                         // 구버전 일기 fallback: photos 없으면 하단 스트립 표시
-                        if entry.photos.isEmpty && !entry.photoDataArray.isEmpty {
+                        if entry.canvasPhotos.isEmpty && !entry.photoDataArray.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 8) {
                                     ForEach(entry.photoDataArray.indices, id: \.self) { i in
@@ -101,8 +101,8 @@ struct DiaryReadView: View {
                     }
 
                     // ── 4. 사진 레이어 (읽기전용) ──
-                    ForEach(entry.photos.indices, id: \.self) { i in
-                        let photo = entry.photos[i]
+                    ForEach(entry.canvasPhotos.indices, id: \.self) { i in
+                        let photo = entry.canvasPhotos[i]
                         if let uiImage = UIImage(data: photo.data) {
                             Button {
                                 selectedPhotoIndex = i
@@ -174,9 +174,9 @@ struct DiaryReadView: View {
                     .presentationCornerRadius(32)
             }
             .fullScreenCover(isPresented: $showPhotoViewer) {
-                let photoDataList = entry.photos.isEmpty
+                let photoDataList = entry.canvasPhotos.isEmpty
                     ? entry.photoDataArray
-                    : entry.photos.map { $0.data }
+                    : entry.canvasPhotos.map { $0.data }
                 PhotoViewerView(photos: photoDataList, currentIndex: selectedPhotoIndex)
             }
             .alert("일기 삭제", isPresented: $showDeleteAlert) {

@@ -10,7 +10,7 @@ struct DiaryEditorView: View {
     let existingEntry: DiaryEntry?
 
     // Canvas elements
-    @State private var selectedSticker: String = "🌸"
+    @State private var selectedSticker: String = ""
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var photoItems: [DiaryPhoto] = []
     @State private var stickers: [DiarySticker] = []
@@ -34,13 +34,15 @@ struct DiaryEditorView: View {
     @State private var showDiscardAlert = false
     @State private var showSaveEffect = false
     @State private var canvasSize: CGSize = .zero
+    @State private var showDeleteZone = false
+    @State private var overDeleteZone = false
 
     private var isEditing: Bool { existingEntry != nil }
 
     private var hasChanges: Bool {
         if let entry = existingEntry {
             return selectedSticker != entry.stickerEmoji
-                || photoItems.count != entry.photos.count
+                || photoItems.count != entry.canvasPhotos.count
                 || stickers.count != entry.stickers.count
                 || textBlocks.count != entry.textBlocks.count
         }
@@ -68,14 +70,9 @@ struct DiaryEditorView: View {
         }
         .navigationTitle(isEditing ? "일기 수정" : "새 일기")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.pastelPinkLight.withOpacity(0.5), for: .navigationBar)
             .toolbarBackground(
-                showTextInput
-                    ? Color.black.opacity(0.88)
-                    : Color.pastelPinkLight.withOpacity(0.5),
-                for: .navigationBar
-            )
-            .toolbarBackground(
-                showTextInput ? Color.black.opacity(0.88) : Color.clear,
+                showTextInput ? Color.white.opacity(0.92) : Color.clear,
                 for: .bottomBar
             )
             .toolbar {
@@ -88,7 +85,7 @@ struct DiaryEditorView: View {
                         }
                     }
                     .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundColor(showTextInput ? .white.opacity(0.85) : .diaryTextLight)
+                    .foregroundColor(.diaryTextLight)
                 }
 
                 if showTextInput {
@@ -108,18 +105,18 @@ struct DiaryEditorView: View {
                         Button { inputIsBold.toggle() } label: {
                             Image(systemName: "bold")
                                 .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(inputIsBold ? Color.pastelPink : .white.opacity(0.45))
+                                .foregroundColor(inputIsBold ? Color.pastelPink : .diaryTextMuted)
                         }
                         Spacer()
                         Button { inputFontSize = max(13, inputFontSize - 2) } label: {
-                            Image(systemName: "textformat.size.smaller").foregroundColor(.white.opacity(0.8))
+                            Image(systemName: "textformat.size.smaller").foregroundColor(.diaryText)
                         }
                         Text("\(Int(inputFontSize))")
                             .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
+                            .foregroundColor(.diaryText)
                             .frame(width: 28)
                         Button { inputFontSize = min(34, inputFontSize + 2) } label: {
-                            Image(systemName: "textformat.size.larger").foregroundColor(.white.opacity(0.8))
+                            Image(systemName: "textformat.size.larger").foregroundColor(.diaryText)
                         }
                     }
                 } else {
@@ -237,6 +234,8 @@ struct DiaryEditorView: View {
                     block: $block,
                     isSelected: selectedTextBlockID == block.id,
                     canvasSize: geo.size,
+                    showDeleteZone: $showDeleteZone,
+                    overDeleteZone: $overDeleteZone,
                     onTap: { selectedTextBlockID = block.id; selectedStickerID = nil; selectedPhotoID = nil },
                     onEdit: { startEditing(block) },
                     onDelete: { removeTextBlock(id: block.id) }
@@ -249,6 +248,8 @@ struct DiaryEditorView: View {
                     photo: $photo,
                     isSelected: selectedPhotoID == photo.id,
                     canvasSize: geo.size,
+                    showDeleteZone: $showDeleteZone,
+                    overDeleteZone: $overDeleteZone,
                     onTap: { selectedPhotoID = photo.id; selectedStickerID = nil; selectedTextBlockID = nil },
                     onDelete: { removePhoto(id: photo.id) }
                 )
@@ -260,6 +261,8 @@ struct DiaryEditorView: View {
                     sticker: $sticker,
                     isSelected: selectedStickerID == sticker.id,
                     canvasSize: geo.size,
+                    showDeleteZone: $showDeleteZone,
+                    overDeleteZone: $overDeleteZone,
                     onTap: { selectedStickerID = sticker.id; selectedTextBlockID = nil; selectedPhotoID = nil },
                     onDelete: { removeSticker(id: sticker.id) }
                 )
@@ -273,7 +276,15 @@ struct DiaryEditorView: View {
                 textInputOverlay(geo: geo)
             }
 
-            // ── 8. 저장 효과 ──
+            // ── 8. 삭제 존 (드래그 중) ──
+            if showDeleteZone && !showTextInput {
+                DeleteZoneView(over: overDeleteZone)
+                    .allowsHitTesting(false)
+                    .position(x: geo.size.width / 2, y: geo.size.height - 100)
+                    .transition(.opacity.combined(with: .scale(scale: 0.7)))
+            }
+
+            // ── 9. 저장 효과 ──
             if showSaveEffect {
                 CherryBlossomEffect().allowsHitTesting(false)
             }
@@ -285,9 +296,37 @@ struct DiaryEditorView: View {
         VStack(spacing: 0) {
             HStack(alignment: .center) {
                 Button { showEmojiPicker = true } label: {
-                    Text(selectedSticker).font(.system(size: 40))
+                    if selectedSticker.isEmpty {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.pastelPink.withOpacity(0.08))
+                            RoundedRectangle(cornerRadius: 12)
+                                .strokeBorder(
+                                    Color.pastelPink.withOpacity(0.55),
+                                    style: StrokeStyle(lineWidth: 1.5, dash: [5, 3])
+                                )
+                            VStack(spacing: 2) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 14, weight: .semibold))
+                                Text("이모지")
+                                    .font(.system(size: 9, weight: .medium, design: .rounded))
+                            }
+                            .foregroundColor(.pastelPink.withOpacity(0.8))
+                        }
+                        .frame(width: 50, height: 50)
+                    } else {
+                        Text(selectedSticker)
+                            .font(.system(size: 40))
+                            .overlay(alignment: .bottomTrailing) {
+                                Image(systemName: "pencil.circle.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.pastelPink)
+                                    .offset(x: 6, y: 6)
+                            }
+                    }
                 }
                 .buttonStyle(.plain)
+                .contentShape(Rectangle())
 
                 Spacer()
 
@@ -310,30 +349,39 @@ struct DiaryEditorView: View {
 
     @ViewBuilder
     private func textInputOverlay(geo: GeometryProxy) -> some View {
-        Color.black.opacity(0.45)
-            .ignoresSafeArea(.container, edges: .all)
-            .onTapGesture { confirmTextInput() }
+        // 캔버스 중앙에 텍스트 입력 박스 — 어두운 오버레이 없이 화면에 바로 쓰는 느낌
+        ZStack {
+            if inputText.isEmpty {
+                Text("텍스트를 입력하세요")
+                    .font(.system(size: inputFontSize,
+                                  weight: inputIsBold ? .bold : .regular,
+                                  design: .rounded))
+                    .foregroundColor(inputTextColor.opacity(0.35))
+                    .multilineTextAlignment(.center)
+                    .allowsHitTesting(false)
+            }
 
-        if inputText.isEmpty {
-            Text("텍스트를 입력하세요")
+            TextEditor(text: $inputText)
                 .font(.system(size: inputFontSize,
                               weight: inputIsBold ? .bold : .regular,
                               design: .rounded))
-                .foregroundColor(.white.opacity(0.28))
+                .foregroundColor(inputTextColor)
                 .multilineTextAlignment(.center)
-                .allowsHitTesting(false)
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
+                .focused($isTextFocused)
         }
-
-        TextEditor(text: $inputText)
-            .font(.system(size: inputFontSize,
-                          weight: inputIsBold ? .bold : .regular,
-                          design: .rounded))
-            .foregroundColor(inputTextColor)
-            .multilineTextAlignment(.center)
-            .scrollContentBackground(.hidden)
-            .background(Color.clear)
-            .focused($isTextFocused)
-            .frame(maxWidth: geo.size.width * 0.82, minHeight: 50, maxHeight: 180)
+        .frame(width: geo.size.width * 0.85, height: 200)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.white.opacity(0.85))
+                RoundedRectangle(cornerRadius: 10)
+                    .strokeBorder(Color.pastelPink.withOpacity(0.45), lineWidth: 1.5)
+            }
+        )
+        .shadow(color: Color.cardShadow, radius: 8, x: 0, y: 4)
+        .position(x: geo.size.width / 2, y: geo.size.height * 0.38)
     }
 
     // MARK: - colorDotButton
@@ -428,7 +476,7 @@ struct DiaryEditorView: View {
         stickers = entry.stickers
 
         // 사진: 새 형식 우선, 없으면 구버전 photoDataArray 마이그레이션
-        let loadedPhotos = entry.photos
+        let loadedPhotos = entry.canvasPhotos
         if loadedPhotos.isEmpty && !entry.photoDataArray.isEmpty {
             let cx: CGFloat = canvasSize.width  > 0 ? canvasSize.width  / 2 : 195
             let cy: CGFloat = canvasSize.height > 0 ? canvasSize.height * 0.50 : 430
@@ -454,25 +502,26 @@ struct DiaryEditorView: View {
     }
 
     private func save() {
+        let emoji = selectedSticker.isEmpty ? "🌸" : selectedSticker
         let derivedContent = textBlocks.map { $0.text }.filter { !$0.isEmpty }.joined(separator: "\n\n")
         if let entry = existingEntry {
             entry.content = derivedContent
-            entry.stickerEmoji = selectedSticker
+            entry.stickerEmoji = emoji
             entry.photoDataArray = photoItems.map { $0.data }
             entry.stickers = stickers
             entry.textBlocks = textBlocks
-            entry.photos = photoItems
+            entry.canvasPhotos = photoItems
             entry.updatedAt = Date()
         } else {
             let newEntry = DiaryEntry(
                 dateKey: date.dateKey,
                 content: derivedContent,
                 photoDataArray: photoItems.map { $0.data },
-                stickerEmoji: selectedSticker
+                stickerEmoji: emoji
             )
             newEntry.stickers = stickers
             newEntry.textBlocks = textBlocks
-            newEntry.photos = photoItems
+            newEntry.canvasPhotos = photoItems
             modelContext.insert(newEntry)
         }
     }
@@ -507,7 +556,15 @@ struct EmojiPickerSheet: View {
                 .foregroundColor(.diaryText)
                 .padding(.top, 24)
 
-            Text(selectedEmoji).font(.system(size: 80))
+            if selectedEmoji.isEmpty {
+                Image("flower")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 80, height: 80)
+                    .opacity(0.6)
+            } else {
+                Text(selectedEmoji).font(.system(size: 80))
+            }
 
             Text("키보드의 🌐 버튼을 눌러 이모지를 선택하세요")
                 .font(.system(size: 13, design: .rounded))

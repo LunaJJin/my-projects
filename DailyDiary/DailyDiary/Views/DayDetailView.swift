@@ -11,7 +11,6 @@ struct DayDetailView: View {
     @State private var showEditor = false
     @State private var editingEntry: DiaryEntry? = nil
     @State private var selectedEntry: DiaryEntry? = nil
-    @State private var decorateEntry: DiaryEntry? = nil
 
     private var entries: [DiaryEntry] {
         allEntries
@@ -70,11 +69,7 @@ struct DayDetailView: View {
                 .presentationDetents([.large])
                 .presentationCornerRadius(32)
         }
-        .sheet(item: $decorateEntry) { entry in
-            DiaryDecorateView(entry: entry)
-                .presentationDetents([.large])
-                .presentationCornerRadius(32)
-        }
+
     }
 
     // MARK: - Date Header
@@ -205,27 +200,6 @@ struct DayDetailView: View {
             }
             .buttonStyle(.plain)
 
-            // 구분선
-            Rectangle()
-                .fill(Color.pastelPinkLight.withOpacity(0.6))
-                .frame(height: 1)
-                .padding(.horizontal, 16)
-
-            // 스티커 붙이기 버튼
-            Button {
-                decorateEntry = entry
-            } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "wand.and.stars")
-                        .font(.system(size: 14, weight: .semibold))
-                    Text("스티커 붙이기")
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.pastelPink)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-            }
-            .buttonStyle(.plain)
         }
         .background(
             RoundedRectangle(cornerRadius: 24)
