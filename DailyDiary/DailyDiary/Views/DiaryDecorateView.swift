@@ -1,8 +1,14 @@
 import SwiftUI
 
-private let allStickerNames: [String] =
-    (1...16).map { String(format: "sticker1_%02d", $0) } +
-    (1...9).map  { String(format: "sticker3_%02d", $0) }
+private let allStickerNames: [String] = [
+    // 새 스티커
+    "sticker_bear", "sticker_pencil", "sticker_gift", "sticker_cart",
+    "sticker_sun", "sticker_cake", "sticker_ribbon", "sticker_heart", "sticker_diary",
+    // 기존 스티커 (실제 존재하는 파일만)
+    "sticker1_01", "sticker1_02", "sticker1_03", "sticker1_04",
+    "sticker3_01", "sticker3_02", "sticker3_03", "sticker3_04",
+    "sticker3_05", "sticker3_06", "sticker3_08",
+]
 
 // MARK: - DiaryDecorateView
 struct DiaryDecorateView: View {
@@ -119,19 +125,12 @@ struct DiaryDecorateView: View {
 
     // MARK: - 텍스트 블록 (읽기전용)
     private func staticTextBlock(_ block: DiaryTextBlock) -> some View {
-        let color: Color = {
-            switch block.colorName {
-            case "white": return .white
-            case "pink": return .pastelPink
-            default: return .diaryText
-            }
-        }()
-        return Text(block.text)
-            .font(.system(size: block.fontSize, weight: block.isBold ? .bold : .regular, design: .rounded))
-            .foregroundColor(color)
+        Text(block.text)
+            .font(DiaryFont.font(name: block.fontName, size: block.fontSize, isBold: block.isBold))
+            .foregroundColor(DiaryColor.color(name: block.colorName))
             .multilineTextAlignment(.center)
             .frame(maxWidth: 260)
-            .shadow(color: block.colorName == "white" ? Color.black.opacity(0.4) : .clear, radius: 3)
+            .shadow(color: DiaryColor.needsShadow(name: block.colorName) ? Color.black.opacity(0.4) : .clear, radius: 3)
             .scaleEffect(block.scale)
             .rotationEffect(.degrees(block.rotation))
             .position(x: block.x, y: block.y)
@@ -289,13 +288,7 @@ struct TextBlockView: View {
     @GestureState private var gestureScale: CGFloat = 1.0
     @GestureState private var gestureRotation: Angle = .zero
 
-    private var textColor: Color {
-        switch block.colorName {
-        case "white": return .white
-        case "pink":  return .pastelPink
-        default:      return .diaryText
-        }
-    }
+    private var textColor: Color { DiaryColor.color(name: block.colorName) }
 
     private func checkOverDelete(_ t: CGSize) -> Bool {
         let cx = block.x + t.width
@@ -305,7 +298,7 @@ struct TextBlockView: View {
 
     var body: some View {
         Text(block.text)
-            .font(.system(size: block.fontSize, weight: block.isBold ? .bold : .regular, design: .rounded))
+            .font(DiaryFont.font(name: block.fontName, size: block.fontSize, isBold: block.isBold))
             .foregroundColor(textColor)
             .multilineTextAlignment(.center)
             .lineLimit(nil)
@@ -313,7 +306,7 @@ struct TextBlockView: View {
             .frame(width: 260)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .shadow(color: block.colorName == "white" ? Color.black.opacity(0.4) : .clear, radius: 3)
+            .shadow(color: DiaryColor.needsShadow(name: block.colorName) ? Color.black.opacity(0.4) : .clear, radius: 3)
             .overlay {
                 if isSelected {
                     RoundedRectangle(cornerRadius: 6)
@@ -374,7 +367,18 @@ struct PhotoCanvasView: View {
     @GestureState private var gestureScale: CGFloat = 1.0
     @GestureState private var gestureRotation: Angle = .zero
 
-    private let baseSize: CGFloat = 150
+    private let maxSize: CGFloat = 200
+
+    private func frameSize(for uiImage: UIImage) -> CGSize {
+        let w = uiImage.size.width
+        let h = Swift.max(uiImage.size.height, 1)
+        let aspect = w / h
+        if aspect >= 1 {
+            return CGSize(width: maxSize, height: maxSize / aspect)
+        } else {
+            return CGSize(width: maxSize * aspect, height: maxSize)
+        }
+    }
 
     private func checkOverDelete(_ t: CGSize) -> Bool {
         let cx = photo.x + t.width
@@ -384,10 +388,11 @@ struct PhotoCanvasView: View {
 
     var body: some View {
         if let uiImage = UIImage(data: photo.data) {
+            let fs = frameSize(for: uiImage)
             Image(uiImage: uiImage)
                 .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: baseSize, height: baseSize)
+                .aspectRatio(contentMode: .fit)
+                .frame(width: fs.width, height: fs.height)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .scaleEffect(photo.scale * gestureScale)
                 .rotationEffect(.degrees(photo.rotation) + gestureRotation)
@@ -398,8 +403,8 @@ struct PhotoCanvasView: View {
                         RoundedRectangle(cornerRadius: 14)
                             .strokeBorder(Color.pastelPink.withOpacity(0.8), lineWidth: 1.5)
                             .frame(
-                                width: baseSize * photo.scale * gestureScale + 10,
-                                height: baseSize * photo.scale * gestureScale + 10
+                                width: fs.width * photo.scale * gestureScale + 10,
+                                height: fs.height * photo.scale * gestureScale + 10
                             )
                             .rotationEffect(.degrees(photo.rotation) + gestureRotation)
                             .offset(dragOffset)

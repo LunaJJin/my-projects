@@ -26,7 +26,11 @@ struct DiaryEditorView: View {
     @State private var inputColorName: String = "primary"
     @State private var inputIsBold: Bool = false
     @State private var inputFontSize: CGFloat = 20
+    @State private var inputFontName: String = "system"
+    @State private var showFontPicker = false
+    @State private var showColorPicker = false
     @FocusState private var isTextFocused: Bool
+    @State private var nextZOrder: Int = 0
 
     // UI state
     @State private var showEmojiPicker = false
@@ -49,13 +53,7 @@ struct DiaryEditorView: View {
         return !textBlocks.isEmpty || !photoItems.isEmpty || !stickers.isEmpty
     }
 
-    private var inputTextColor: Color {
-        switch inputColorName {
-        case "white": return .white
-        case "pink": return .pastelPink
-        default: return .diaryText
-        }
-    }
+    private var inputTextColor: Color { DiaryColor.color(name: inputColorName) }
 
     var body: some View {
         NavigationStack { editorCanvas }
@@ -71,10 +69,6 @@ struct DiaryEditorView: View {
         .navigationTitle(isEditing ? "일기 수정" : "새 일기")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.pastelPinkLight.withOpacity(0.5), for: .navigationBar)
-            .toolbarBackground(
-                showTextInput ? Color.white.opacity(0.92) : Color.clear,
-                for: .bottomBar
-            )
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("취소") {
@@ -93,31 +87,6 @@ struct DiaryEditorView: View {
                         Button("완료") { confirmTextInput() }
                             .font(.system(size: 16, weight: .bold, design: .rounded))
                             .foregroundColor(.pastelPink)
-                    }
-                }
-
-                if showTextInput {
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        colorDotButton("primary", Color.diaryText)
-                        colorDotButton("white", Color.white)
-                        colorDotButton("pink", Color.pastelPink)
-                        Spacer()
-                        Button { inputIsBold.toggle() } label: {
-                            Image(systemName: "bold")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(inputIsBold ? Color.pastelPink : .diaryTextMuted)
-                        }
-                        Spacer()
-                        Button { inputFontSize = max(13, inputFontSize - 2) } label: {
-                            Image(systemName: "textformat.size.smaller").foregroundColor(.diaryText)
-                        }
-                        Text("\(Int(inputFontSize))")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(.diaryText)
-                            .frame(width: 28)
-                        Button { inputFontSize = min(34, inputFontSize + 2) } label: {
-                            Image(systemName: "textformat.size.larger").foregroundColor(.diaryText)
-                        }
                     }
                 } else {
                     ToolbarItemGroup(placement: .bottomBar) {
@@ -170,6 +139,11 @@ struct DiaryEditorView: View {
                     }
                 }
             }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if showTextInput {
+                    textFormatBar
+                }
+            }
             .alert("작성 중인 내용이 있어요", isPresented: $showDiscardAlert) {
                 Button("계속 작성", role: .cancel) { }
                 Button("나가기", role: .destructive) { dismiss() }
@@ -187,6 +161,16 @@ struct DiaryEditorView: View {
             .onChange(of: selectedPhotos) { _, newPhotos in
                 Task { await loadPhotos(from: newPhotos) }
             }
+            .onChange(of: showFontPicker) { _, shown in
+                if !shown && showTextInput {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { isTextFocused = true }
+                }
+            }
+            .onChange(of: showColorPicker) { _, shown in
+                if !shown && showTextInput {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { isTextFocused = true }
+                }
+            }
             .sheet(isPresented: $showEmojiPicker) {
                 EmojiPickerSheet(selectedEmoji: $selectedSticker)
                     .presentationDetents([.height(300)])
@@ -199,6 +183,16 @@ struct DiaryEditorView: View {
                 }
                 .presentationDetents([.medium, .large])
                 .presentationCornerRadius(28)
+            }
+            .sheet(isPresented: $showFontPicker) {
+                FontPickerSheet(selectedFontName: $inputFontName)
+                    .presentationDetents([.height(340)])
+                    .presentationCornerRadius(28)
+            }
+            .sheet(isPresented: $showColorPicker) {
+                ColorPickerSheet(selectedColorName: $inputColorName)
+                    .presentationDetents([.height(300)])
+                    .presentationCornerRadius(28)
             }
     }
 
@@ -240,6 +234,7 @@ struct DiaryEditorView: View {
                     onEdit: { startEditing(block) },
                     onDelete: { removeTextBlock(id: block.id) }
                 )
+                .zIndex(Double(block.zOrder))
             }
 
             // ── 4. 사진 레이어 ──
@@ -253,6 +248,7 @@ struct DiaryEditorView: View {
                     onTap: { selectedPhotoID = photo.id; selectedStickerID = nil; selectedTextBlockID = nil },
                     onDelete: { removePhoto(id: photo.id) }
                 )
+                .zIndex(Double(photo.zOrder))
             }
 
             // ── 5. 스티커 레이어 ──
@@ -266,6 +262,7 @@ struct DiaryEditorView: View {
                     onTap: { selectedStickerID = sticker.id; selectedTextBlockID = nil; selectedPhotoID = nil },
                     onDelete: { removeSticker(id: sticker.id) }
                 )
+                .zIndex(Double(sticker.zOrder))
             }
 
             // ── 6. 헤더 (상단 고정) ──
@@ -349,24 +346,20 @@ struct DiaryEditorView: View {
 
     @ViewBuilder
     private func textInputOverlay(geo: GeometryProxy) -> some View {
-        // 캔버스 중앙에 텍스트 입력 박스 — 어두운 오버레이 없이 화면에 바로 쓰는 느낌
-        ZStack {
+        ZStack(alignment: .topLeading) {
             if inputText.isEmpty {
                 Text("텍스트를 입력하세요")
-                    .font(.system(size: inputFontSize,
-                                  weight: inputIsBold ? .bold : .regular,
-                                  design: .rounded))
+                    .font(DiaryFont.font(name: inputFontName, size: inputFontSize, isBold: inputIsBold))
                     .foregroundColor(inputTextColor.opacity(0.35))
-                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
                     .allowsHitTesting(false)
             }
 
             TextEditor(text: $inputText)
-                .font(.system(size: inputFontSize,
-                              weight: inputIsBold ? .bold : .regular,
-                              design: .rounded))
+                .font(DiaryFont.font(name: inputFontName, size: inputFontSize, isBold: inputIsBold))
                 .foregroundColor(inputTextColor)
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(.leading)
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
                 .focused($isTextFocused)
@@ -379,23 +372,96 @@ struct DiaryEditorView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .strokeBorder(Color.pastelPink.withOpacity(0.45), lineWidth: 1.5)
             }
+            // 입력 박스 배경 탭 → 키보드 재활성
+            .onTapGesture { isTextFocused = true }
         )
         .shadow(color: Color.cardShadow, radius: 8, x: 0, y: 4)
         .position(x: geo.size.width / 2, y: geo.size.height * 0.38)
     }
 
-    // MARK: - colorDotButton
-    @ViewBuilder
-    private func colorDotButton(_ name: String, _ color: Color) -> some View {
-        Button { inputColorName = name } label: {
-            ZStack {
-                Circle().fill(color).frame(width: 26, height: 26)
-                if inputColorName == name {
-                    Circle().strokeBorder(Color.white, lineWidth: 2).frame(width: 32, height: 32)
+
+    // MARK: - Text Format Bar (safeAreaInset — 키보드 위에 자동 배치)
+    private var textFormatBar: some View {
+        HStack(spacing: 0) {
+            // 색상
+            Button {
+                dismissKeyboard()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { showColorPicker = true }
+            } label: {
+                ZStack {
+                    Circle().fill(DiaryColor.color(name: inputColorName)).frame(width: 26, height: 26)
+                    Circle().strokeBorder(Color.gray.opacity(0.3), lineWidth: 1).frame(width: 26, height: 26)
+                    Circle().strokeBorder(Color.pastelPink.opacity(0.8), lineWidth: 2).frame(width: 32, height: 32)
                 }
             }
+            .buttonStyle(.plain)
+
+            Spacer()
+
+            // 볼드
+            Button { inputIsBold.toggle() } label: {
+                Image(systemName: "bold")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(inputIsBold ? Color.pastelPink : .diaryTextMuted)
+            }
+
+            Spacer()
+
+            // 글씨체
+            Button {
+                dismissKeyboard()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { showFontPicker = true }
+            } label: {
+                Text("Aa")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(inputFontName == "system" ? .diaryTextMuted : .pastelPink)
+            }
+
+            Spacer()
+
+            // 크기 -
+            Button { inputFontSize = max(13, inputFontSize - 2) } label: {
+                Image(systemName: "textformat.size.smaller").foregroundColor(.diaryText)
+            }
+
+            Text("\(Int(inputFontSize))")
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundColor(.diaryText)
+                .frame(width: 28)
+
+            // 크기 +
+            Button { inputFontSize = min(34, inputFontSize + 2) } label: {
+                Image(systemName: "textformat.size.larger").foregroundColor(.diaryText)
+            }
+
+            Spacer()
+
+            // 키보드 토글
+            Button {
+                if isTextFocused { dismissKeyboard() } else { isTextFocused = true }
+            } label: {
+                Image(systemName: isTextFocused ? "keyboard.chevron.compact.down" : "keyboard")
+                    .font(.system(size: 17))
+                    .foregroundColor(.diaryTextMuted)
+            }
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
+        .background(.ultraThinMaterial)
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Color.pastelPinkLight.withOpacity(0.5))
+                .frame(height: 1)
+        }
+    }
+
+    // MARK: - Keyboard
+    private func dismissKeyboard() {
+        isTextFocused = false
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil, from: nil, for: nil
+        )
     }
 
     // MARK: - Text Block Helpers
@@ -405,6 +471,7 @@ struct DiaryEditorView: View {
         inputColorName = "primary"
         inputIsBold = false
         inputFontSize = 20
+        inputFontName = "system"
         withAnimation(.easeInOut(duration: 0.2)) { showTextInput = true }
     }
 
@@ -414,6 +481,7 @@ struct DiaryEditorView: View {
         inputColorName = block.colorName
         inputIsBold = block.isBold
         inputFontSize = block.fontSize
+        inputFontName = block.fontName
         withAnimation(.easeInOut(duration: 0.2)) { showTextInput = true }
     }
 
@@ -430,13 +498,16 @@ struct DiaryEditorView: View {
             textBlocks[idx].colorName = inputColorName
             textBlocks[idx].isBold = inputIsBold
             textBlocks[idx].fontSize = inputFontSize
+            textBlocks[idx].fontName = inputFontName
         } else {
             let cx = canvasSize.width  > 0 ? canvasSize.width  / 2 : 195
             let cy = canvasSize.height > 0 ? canvasSize.height * 0.42 : 360
             let block = DiaryTextBlock(
                 text: trimmed, x: cx, y: cy,
-                fontSize: inputFontSize, colorName: inputColorName, isBold: inputIsBold
+                fontSize: inputFontSize, colorName: inputColorName, isBold: inputIsBold,
+                fontName: inputFontName, zOrder: nextZOrder
             )
+            nextZOrder += 1
             textBlocks.append(block)
             selectedTextBlockID = block.id
         }
@@ -453,7 +524,9 @@ struct DiaryEditorView: View {
     private func addSticker(imageName: String) {
         let cx = canvasSize.width  > 0 ? canvasSize.width  / 2 : 195
         let cy = canvasSize.height > 0 ? canvasSize.height * 0.45 : 390
-        let s = DiarySticker(imageName: imageName, x: cx, y: cy)
+        var s = DiarySticker(imageName: imageName, x: cx, y: cy)
+        s.zOrder = nextZOrder
+        nextZOrder += 1
         stickers.append(s)
         selectedStickerID = s.id
     }
@@ -499,6 +572,10 @@ struct DiaryEditorView: View {
         } else {
             textBlocks = loaded
         }
+
+        // nextZOrder를 기존 요소 최대값 + 1로 초기화
+        let maxZ = (stickers.map(\.zOrder) + photoItems.map(\.zOrder) + textBlocks.map(\.zOrder)).max() ?? 0
+        nextZOrder = maxZ + 1
     }
 
     private func save() {
@@ -534,7 +611,9 @@ struct DiaryEditorView: View {
                let uiImage = UIImage(data: data),
                let compressed = uiImage.jpegData(compressionQuality: 0.7) {
                 await MainActor.run {
-                    let photo = DiaryPhoto(data: compressed, x: cx, y: cy)
+                    var photo = DiaryPhoto(data: compressed, x: cx, y: cy)
+                    photo.zOrder = nextZOrder
+                    nextZOrder += 1
                     photoItems.append(photo)
                     selectedPhotoID = photo.id
                 }
@@ -566,7 +645,7 @@ struct EmojiPickerSheet: View {
                 Text(selectedEmoji).font(.system(size: 80))
             }
 
-            Text("키보드의 🌐 버튼을 눌러 이모지를 선택하세요")
+            Text("이모티콘 버튼을 눌러 이모지를 선택하세요")
                 .font(.system(size: 13, design: .rounded))
                 .foregroundColor(.diaryTextLight)
                 .multilineTextAlignment(.center)
@@ -576,6 +655,102 @@ struct EmojiPickerSheet: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
+    }
+}
+
+// MARK: - FontPickerSheet
+struct FontPickerSheet: View {
+    @Binding var selectedFontName: String
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("글씨체")
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundColor(.diaryText)
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 8)
+
+            ForEach(DiaryFont.options) { option in
+                Button {
+                    selectedFontName = option.id
+                    dismiss()
+                } label: {
+                    HStack(spacing: 12) {
+                        Text("가나다 ABC 123")
+                            .font(DiaryFont.font(name: option.id, size: 17, isBold: false))
+                            .foregroundColor(.diaryText)
+                            .frame(minWidth: 150, alignment: .leading)
+                        Spacer()
+                        Text(option.label)
+                            .font(.system(size: 13, design: .rounded))
+                            .foregroundColor(.diaryTextLight)
+                        if selectedFontName == option.id {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.pastelPink)
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 13)
+                }
+                .buttonStyle(.plain)
+                Divider().padding(.horizontal, 24)
+            }
+            Spacer()
+        }
+    }
+}
+
+// MARK: - ColorPickerSheet
+struct ColorPickerSheet: View {
+    @Binding var selectedColorName: String
+    @Environment(\.dismiss) private var dismiss
+
+    private let columns = Array(repeating: GridItem(.flexible()), count: 5)
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("색상")
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundColor(.diaryText)
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 20)
+
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(DiaryColor.options) { option in
+                    Button {
+                        selectedColorName = option.id
+                        dismiss()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(option.color)
+                                .frame(width: 44, height: 44)
+                            Circle()
+                                .strokeBorder(Color.gray.opacity(0.2), lineWidth: 1)
+                                .frame(width: 44, height: 44)
+                            if selectedColorName == option.id {
+                                Circle()
+                                    .strokeBorder(Color.pastelPink, lineWidth: 3)
+                                    .frame(width: 52, height: 52)
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(
+                                        DiaryColor.needsShadow(name: option.id) ? .black.opacity(0.6) : .white
+                                    )
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 28)
+
+            Spacer()
+        }
     }
 }
 

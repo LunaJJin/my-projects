@@ -24,6 +24,18 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>일기에 사진을 첨부하기 위해 사진 라이브러리 접근이 필요합니다.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>일기를 이미지로 저장하기 위해 사진 앨범 접근이 필요합니다.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>NanumGothic.ttf</string>
+		<string>NanumGothicBold.ttf</string>
+		<string>NanumMyeongjo.ttf</string>
+		<string>NanumMyeongjoBold.ttf</string>
+		<string>NanumPen.ttf</string>
+		<string>NanumSquareR.otf</string>
+		<string>NanumSquareB.otf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
