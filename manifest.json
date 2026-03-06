@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Form Validator - 폼 검증 도구",
+  "version": "1.1.0",
+  "description": "이메일, 전화번호, 이름, 회사명, 사업자등록번호 로컬 검증 도구",
+  "permissions": ["storage", "tabs"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Form Validator"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["validator.js", "content.js"],
+    "css": ["content.css"]
+  }]
+}

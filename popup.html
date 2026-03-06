@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Validator</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <span class="title">Form Validator</span>
+      <label class="toggle">
+        <input type="checkbox" id="enableToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </header>
+
+    <div class="section test-section">
+      <button id="testBtn">현재 페이지 테스트 시작</button>
+      <p class="hint">페이지의 모든 입력 필드를 자동으로 찾아 다양한 값으로 테스트합니다. 결과는 화면 오른쪽 패널에 실시간으로 표시되며 CSV / Google Sheets로 내보낼 수 있습니다.</p>
+    </div>
+
+    <div class="section info-box">
+      <p class="info-title">자동 감지 항목</p>
+      <ul>
+        <li><span class="icon">🔢</span> 숫자 전용 필드 <span class="tag local">DOM</span></li>
+        <li><span class="icon">📧</span> 이메일 <span class="tag local">로컬</span></li>
+        <li><span class="icon">📱</span> 휴대폰번호 <span class="tag local">로컬</span></li>
+        <li><span class="icon">🔑</span> 사업자등록번호 <span class="tag local">로컬</span></li>
+        <li><span class="icon">👤</span> 이름 <span class="tag local">로컬</span></li>
+        <li><span class="icon">🏢</span> 회사명 / 기업명 <span class="tag local">로컬</span></li>
+        <li><span class="icon">📝</span> 일반 텍스트 <span class="tag local">로컬</span></li>
+      </ul>
+    </div>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+/* Form Validator Extension - 페이지 인풋 검증 UI */
+
+.fv-badge {
+  display: block;
+  font-size: 11px !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  padding: 3px 9px !important;
+  margin-top: 4px !important;
+  border-radius: 12px !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  box-sizing: border-box !important;
+}
+
+/* 유효 */
+.fv-badge-valid {
+  background: #d1f0da !important;
+  color: #165c2e !important;
+  border: 1px solid #a8ddb5 !important;
+}
+
+/* 무효 */
+.fv-badge-invalid {
+  background: #fde8e8 !important;
+  color: #7b1d1d !important;
+  border: 1px solid #f5b8b8 !important;
+}
+
+/* 로딩 */
+.fv-badge-loading {
+  background: #fff8e1 !important;
+  color: #7a5c00 !important;
+  border: 1px solid #ffe082 !important;
+}
+
+/* 정보 / AI 오류 등 */
+.fv-badge-info,
+.fv-badge-error {
+  background: #e8f4fd !important;
+  color: #0b4f7a !important;
+  border: 1px solid #b3d7f5 !important;
+}
+
+/* 인풋 테두리 상태 */
+.fv-input-valid {
+  border-color: #2e9e52 !important;
+  box-shadow: 0 0 0 2px rgba(46, 158, 82, 0.2) !important;
+  outline: none !important;
+}
+
+.fv-input-invalid {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.2) !important;
+  outline: none !important;
+}
+
+.fv-input-loading {
+  border-color: #f9a825 !important;
+  box-shadow: 0 0 0 2px rgba(249, 168, 37, 0.2) !important;
+  outline: none !important;
+}
+
+/* ── 테스트 모드: 현재 테스트 중인 인풋 하이라이트 ── */
+.fv-test-active {
+  outline: 3px solid #ff6b35 !important;
+  outline-offset: 2px !important;
+  animation: fv-pulse 1s ease-in-out infinite !important;
+}
+@keyframes fv-pulse {
+  0%, 100% { outline-color: #ff6b35; }
+  50%       { outline-color: #ffc300; }
+}
+
+/* ── 테스트 패널 ── */
+#fv-test-panel {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  width: 440px !important;
+  max-height: calc(100vh - 40px) !important;
+  background: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18) !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  font-size: 13px !important;
+  overflow: hidden !important;
+}
+
+.fv-tp-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 14px !important;
+  background: #1a1a2e !important;
+  color: #fff !important;
+  flex-shrink: 0 !important;
+}
+.fv-tp-title {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px !important;
+}
+.fv-tp-controls {
+  display: flex !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+.fv-tp-controls button {
+  background: rgba(255,255,255,0.15) !important;
+  border: none !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  padding: 4px 9px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-family: inherit !important;
+  transition: background 0.15s !important;
+}
+.fv-tp-controls button:hover { background: rgba(255,255,255,0.28) !important; }
+#fv-tp-close {
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+/* 진행률 바 */
+.fv-tp-progress-wrap {
+  height: 4px !important;
+  background: #e9ecef !important;
+  flex-shrink: 0 !important;
+}
+.fv-tp-progress-bar {
+  height: 100% !important;
+  background: linear-gradient(90deg, #4caf50, #8bc34a) !important;
+  width: 0% !important;
+  transition: width 0.3s ease !important;
+}
+
+/* 요약 줄 */
+.fv-tp-summary {
+  padding: 8px 14px !important;
+  background: #f8f9fa !important;
+  border-bottom: 1px solid #e9ecef !important;
+  color: #495057 !important;
+  font-size: 12px !important;
+  flex-shrink: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* 본문 스크롤 */
+.fv-tp-body {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 8px !important;
+}
+.fv-tp-body::-webkit-scrollbar { width: 6px; }
+.fv-tp-body::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+/* 인풋 행 */
+.fv-tp-input-row {
+  margin-bottom: 6px !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.fv-tp-input-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 9px 11px !important;
+  background: #f8f9fa !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: background 0.15s !important;
+}
+.fv-tp-input-header:hover { background: #e9ecef !important; }
+
+.fv-tp-chevron {
+  font-size: 10px !important;
+  color: #868e96 !important;
+  flex-shrink: 0 !important;
+}
+.fv-tp-input-name {
+  flex: 1 !important;
+  font-weight: 600 !important;
+  color: #212529 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 12px !important;
+}
+.fv-tp-input-status {
+  font-size: 11px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  color: #868e96 !important;
+}
+.fv-tp-input-status.st-testing { color: #fd7e14 !important; font-weight: 600 !important; }
+.fv-tp-input-status.st-pass    { color: #28a745 !important; font-weight: 600 !important; }
+.fv-tp-input-status.st-fail    { color: #dc3545 !important; font-weight: 600 !important; }
+
+/* ── 하단 푸터 (버튼 영역) ── */
+#fv-test-panel .fv-tp-footer {
+  display: flex !important;
+  gap: 6px !important;
+  padding: 8px 10px !important;
+  border-top: 1px solid #e9ecef !important;
+  background: #f8f9fa !important;
+  flex-shrink: 0 !important;
+}
+.fv-btn-run {
+  flex: 1 !important;
+  background: #1a1a2e !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+  transition: opacity 0.15s !important;
+}
+.fv-btn-run:hover { opacity: 0.85 !important; }
+.fv-btn-sec {
+  background: rgba(0,0,0,0.07) !important;
+  color: #212529 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 11px !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+  transition: background 0.15s !important;
+  white-space: nowrap !important;
+}
+.fv-btn-sec:hover { background: rgba(0,0,0,0.13) !important; }
+
+/* ── Discovery 필드 선택 목록 ── */
+.fv-tp-disc-list {
+  padding: 4px 0 !important;
+}
+.fv-tp-disc-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 7px 12px !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  transition: background 0.12s !important;
+}
+.fv-tp-disc-row:hover { background: #f8f9fa !important; }
+.fv-tp-disc-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  flex: 1 !important;
+  cursor: pointer !important;
+  min-width: 0 !important;
+}
+.fv-tp-disc-cb {
+  width: 15px !important;
+  height: 15px !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  accent-color: #1a1a2e !important;
+}
+.fv-tp-disc-name {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.fv-tp-disc-solo {
+  background: none !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 5px !important;
+  padding: 3px 8px !important;
+  font-size: 10px !important;
+  color: #495057 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  font-family: inherit !important;
+  transition: background 0.12s !important;
+}
+.fv-tp-disc-solo:hover { background: #e9ecef !important; }
+
+/* ── 필드 타입 태그 ── */
+.fv-tp-field-tag {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 2px 7px !important;
+  border-radius: 10px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  letter-spacing: 0.2px !important;
+}
+.fv-tag-email   { background: #dbeafe !important; color: #1e40af !important; }
+.fv-tag-phone   { background: #d1fae5 !important; color: #065f46 !important; }
+.fv-tag-name    { background: #ede9fe !important; color: #4c1d95 !important; }
+.fv-tag-company { background: #fef3c7 !important; color: #78350f !important; }
+.fv-tag-biznum  { background: #fee2e2 !important; color: #7f1d1d !important; }
+.fv-tag-number  { background: #e0f2fe !important; color: #0c4a6e !important; }
+.fv-tag-text    { background: #f1f5f9 !important; color: #334155 !important; }
+
+/* 범례 — 결과 뷰에서 body 안에 들어가므로 margin으로 full-width 처리 */
+.fv-tp-legend {
+  display: flex !important;
+  gap: 10px !important;
+  padding: 5px 6px !important;
+  border-bottom: 1px solid #e9ecef !important;
+  font-size: 11px !important;
+  margin: -8px -8px 6px !important;
+}
+.fvleg-pass { color: #155724 !important; font-weight: 600 !important; }
+.fvleg-fail { color: #721c24 !important; font-weight: 600 !important; }
+.fvleg-skip { color: #495057 !important; }
+
+/* 케이스 목록 — display는 JS로 제어하므로 !important 제외 */
+.fv-tp-cases {
+  padding: 6px 8px !important;
+  display: none;
+  background: #fff !important;
+}
+.fv-tp-case {
+  display: grid !important;
+  grid-template-columns: 16px 90px 110px 1fr !important;
+  gap: 4px !important;
+  align-items: start !important;
+  padding: 4px 6px !important;
+  border-radius: 5px !important;
+  margin-bottom: 3px !important;
+  font-size: 11px !important;
+}
+.fv-case-pass { background: #d4edda !important; color: #155724 !important; }
+.fv-case-fail { background: #f8d7da !important; color: #721c24 !important; }
+.fv-case-skip { background: #fff3cd !important; color: #856404 !important; }
+
+.fvc-icon  { font-weight: 700 !important; text-align: center !important; padding-top: 1px !important; }
+.fvc-label { font-weight: 600 !important; }
+.fvc-value { opacity: 0.85 !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.fvc-msg   { opacity: 0.9 !important; word-break: break-word !important; line-height: 1.4 !important; }
+
+/* 페이지 자체 오류 메시지 */
+.fvc-page-error {
+  padding: 3px 8px 4px 26px !important;
+  font-size: 10px !important;
+  color: #7b1d1d !important;
+  background: #fff5f5 !important;
+  border-left: 2px solid #e53935 !important;
+  margin-bottom: 3px !important;
+  word-break: break-word !important;
+  line-height: 1.4 !important;
+}
